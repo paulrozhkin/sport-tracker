@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/paulrozhkin/sport-tracker/config"
+	"github.com/paulrozhkin/sport-tracker/internal/infrastructure"
 	"go.uber.org/zap"
 	"log"
 	"net/http"
@@ -14,10 +15,15 @@ import (
 )
 
 type sportTrackerApiGatewayServer struct {
+	store *infrastructure.Store
 }
 
-func newServer() *sportTrackerApiGatewayServer {
-	return &sportTrackerApiGatewayServer{}
+func newServer(configurations *config.Configurations) *sportTrackerApiGatewayServer {
+	store, err := infrastructure.CreateAndMigrate(&configurations.Database)
+	if err != nil {
+		zap.S().Fatalf("Connection fail due to: %s", err)
+	}
+	return &sportTrackerApiGatewayServer{store: store}
 }
 
 func main() {
@@ -36,7 +42,7 @@ func main() {
 
 	confString, _ := json.MarshalIndent(conf, "", " ")
 	zap.S().Info("Configuration:\n", string(confString))
-	server := newServer()
+	server := newServer(conf)
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
 	r.Use(middleware.RealIP)

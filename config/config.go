@@ -15,9 +15,11 @@ type ServerConfigurations struct {
 }
 
 type DatabaseConfigurations struct {
-	DBName     string
-	DBUser     string
-	DBPassword string
+	DBName       string
+	DBUser       string
+	DBPassword   string
+	DBConnection string
+	DBSslMode    string
 }
 
 func LoadConfigurations() (*Configurations, error) {
