@@ -1,0 +1,79 @@
+Table users as U {
+  id                        uuid        [pk]
+  username                  text
+  password                  text
+  name                      text
+  gender                    number
+  height                    number
+  created                   timestamp
+  updated                   timestamp
+}
+
+Table exercises as E {
+  id                        uuid [pk]
+  name                      string
+  short_description         string
+  owner                     uuid [ref: > U.id]
+  created                   timestamp
+  updated                   timestamp
+}
+
+Table workouts as W {
+  id                        uuid [pk]
+  name                      string
+  short_description         string
+  owner                     uuid [ref: > U.id]
+  created                   timestamp
+  updated                   timestamp
+}
+
+Table workouts_composition as WC {
+  id                        uuid [pk, ref: > W.id]
+  order                     number [pk]
+  complex_id                uuid [ref: > W.id]
+  exercise_id               uuid [ref: > E.id]
+}
+
+Table workout_plans as WP {
+  id                        uuid [pk]
+  name                      string
+  short_description         string
+  repeatable                bool
+  owner                     uuid [ref: > U.id]
+  created                   timestamp
+  updated                   timestamp
+}
+
+Table workout_plans_composition {
+  id                        uuid [pk, ref: > WP.id]
+  order                     number [pk]
+  workout                   uuid [ref: > W.id]
+}
+
+Table user_workouts as UW {
+  id                        uuid [pk]
+  user_id                   uuid [ref: > U.id]
+  workout                   uuid [ref: > WP.id]
+  active                    bool
+  schedule                  int[]
+  created                   timestamp
+  updated                   timestamp
+}
+
+Table workouts_statistic {
+  id                        uuid [pk]
+  workout                   uuid [ref: > UW.id]
+  skipped                   bool
+  result                    string
+  date                      timestamp
+  created                   timestamp
+  updated                   timestamp
+}
+
+Table weight_statistic {
+  id                        uuid [pk]
+  user_id                   uuid [ref: > U.id]
+  weight                    number
+  created                   timestamp
+  updated                   timestamp
+}
