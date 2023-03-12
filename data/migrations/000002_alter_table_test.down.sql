@@ -1,6 +1,0 @@
-BEGIN;
-
-ALTER TABLE test
-    DROP COLUMN column2;
-
-COMMIT;

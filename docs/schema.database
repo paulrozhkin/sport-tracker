@@ -3,46 +3,46 @@ Table users as U {
   username                  text
   password                  text
   name                      text
-  gender                    number
-  height                    number
+  gender                    numeric
+  height                    numeric
   created                   timestamp
   updated                   timestamp
 }
 
 Table exercises as E {
   id                        uuid [pk]
-  name                      string
-  short_description         string
+  name                      text
+  short_description         text
   owner                     uuid [ref: > U.id]
+  complex                   uuid[] [ref: > E.id]
   created                   timestamp
   updated                   timestamp
-}
-
-Table exercises_composition as EC {
-  exercise                  uuid [pk, ref: > E.id]
-  order                     number [pk]
 }
 
 Table workout_plans as WP {
   id                        uuid [pk]
-  name                      string
-  short_description         string
-  repeatable                bool
+  name                      text
+  short_description         text
+  repeatable                boolean
   owner                     uuid [ref: > U.id]
   created                   timestamp
   updated                   timestamp
 }
 
-Table workout_plans_composition {
-  exercise                  uuid [pk, ref: > E.id]
-  order                     number [pk]
+Table workouts as W {
+  id                        uuid [pk]
+  plan_id                   uuid [ref: > WP.id]
+  order_in_plan             numeric
+  complex                   uuid[] [ref: > E.id]
+  created                   timestamp
+  updated                   timestamp
 }
 
 Table user_workouts as UW {
   id                        uuid [pk]
   user_id                   uuid [ref: > U.id]
-  workout                   uuid [ref: > WP.id]
-  active                    bool
+  workout_plan              uuid [ref: > WP.id]
+  active                    boolean
   schedule                  int[]
   created                   timestamp
   updated                   timestamp
@@ -50,11 +50,10 @@ Table user_workouts as UW {
 
 Table workouts_statistic {
   id                        uuid [pk]
-  workout                   uuid [ref: > UW.id]
-  exercise                  uuid [ref: > E.id]
-  order                     number
-  skipped                   bool
-  date                      timestamp
+  user_workout              uuid [ref: > UW.id]
+  workout                   uuid [ref: > W.id]
+  skipped                   boolean
+  workout_date              timestamp
   created                   timestamp
   updated                   timestamp
 }

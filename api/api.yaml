@@ -107,7 +107,7 @@ paths:
       summary: Get exercises
       operationId: getExercises
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       responses:
         "200":
           description: Exercises
@@ -141,7 +141,7 @@ paths:
       operationId: createExercise
       summary: Create exercise
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       requestBody:
         content:
           application/json:
@@ -180,7 +180,7 @@ paths:
       operationId: getExerciseById
       summary: Get exercises
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       parameters:
         - name: id
           in: path
@@ -234,7 +234,7 @@ paths:
       operationId: updateExercise
       summary: Update exercises
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       parameters:
         - name: id
           in: path
@@ -294,7 +294,7 @@ paths:
       operationId: deleteExercise
       summary: Delete exercise
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       parameters:
         - name: id
           in: path
@@ -489,7 +489,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/exerciseCreateModel'
+              $ref: '#/components/schemas/workoutCreateModel'
         required: true
       responses:
         '200':
@@ -497,7 +497,7 @@ paths:
           content:
             application-json:
               schema:
-                $ref: '#/components/schemas/exerciseFullModel'
+                $ref: '#/components/schemas/workoutFullModel'
         '400':
           description: Bad Request.
           content:
@@ -587,7 +587,7 @@ paths:
       summary: Get statistic
       operationId: getStatistic
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       responses:
         "200":
           description: Statistic of training
@@ -622,7 +622,7 @@ paths:
       operationId: createWeightMeasurement
       summary: Create weight measurement
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       requestBody:
         content:
           application/json:
@@ -667,7 +667,7 @@ paths:
       operationId: updateWeightMeasurement
       summary: Update weight measurement
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       parameters:
         - name: id
           in: path
@@ -727,7 +727,7 @@ paths:
       operationId: deleteWeightMeasurement
       summary: Delete weight measurement
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       parameters:
         - name: id
           in: path
@@ -1036,11 +1036,14 @@ components:
           type: string
         repeatable:
           type: boolean
-        complex:
+        workouts:
           type: array
-          description: Workout composition (complex)
+          description: All days workouts
           items:
-            type: string
+            description: Id workout
+            type: array
+            items:
+              type: string
     workout:
       type: object
       properties:
@@ -1065,11 +1068,14 @@ components:
           type: string
         repeatable:
           type: boolean
-        complex:
+        workouts:
           type: array
-          description: Exercise composition (complex)
+          description: All days workouts
           items:
-            $ref: '#/components/schemas/exerciseFullModel'
+            type: array
+            description: Exercise composition (one workout)
+            items:
+              $ref: '#/components/schemas/exerciseFullModel'
     DayOfWeek:
       type: string
       enum:
@@ -1123,19 +1129,21 @@ components:
           items:
             $ref: "#/components/schemas/workoutHistory"
         current:
-          allOf:
-            - $ref: '#/components/schemas/exerciseFullModel'
-            - type: object
-              properties:
-                id:
-                  description: Workout id. Can be null if the training is not custom and the day has not come.
-                  nullable: true
-                  type: string
-                  format: uuid
-                date:
-                  type: string
-                  format: date-time
-                  example: '2023-07-21Z'
+          type: object
+          properties:
+            id:
+              description: Workout statistic id. Can be null if the training is not custom and the day has not come.
+              nullable: true
+              type: string
+              format: uuid
+            date:
+              type: string
+              format: date-time
+              example: '2023-07-21Z'
+            workout:
+              type: array
+              items:
+                $ref: '#/components/schemas/exerciseFullModel'
         upcoming:
           type: array
           items:
@@ -1148,7 +1156,7 @@ components:
           type: string
           description: 'Error description.'
   securitySchemes:
-    bearerAuth:            # arbitrary name for the security scheme
+    bearerAuth: # arbitrary name for the security scheme
       type: http
       scheme: bearer
       bearerFormat: JWT    # optional, arbitrary value for documentation purposes
