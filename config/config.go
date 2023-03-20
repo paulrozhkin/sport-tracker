@@ -1,28 +1,31 @@
 package config
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/spf13/viper"
+	"go.uber.org/zap"
 )
 
-type Configurations struct {
+type Configuration struct {
 	Server   ServerConfigurations
 	Database DatabaseConfigurations
 }
 
 type ServerConfigurations struct {
-	Port int
+	Host string `yaml:"host"`
+	Port int    `yaml:"port"`
 }
 
 type DatabaseConfigurations struct {
-	DBName       string
-	DBUser       string
-	DBPassword   string
-	DBConnection string
-	DBSslMode    string
+	DBName       string `yaml:"dbname"`
+	DBUser       string `yaml:"dbuser"`
+	DBPassword   string `yaml:"dbpassword"`
+	DBConnection string `yaml:"dbconnection"`
+	DBSslMode    string `yaml:"dbsslmode"`
 }
 
-func LoadConfigurations() (*Configurations, error) {
+func LoadConfigurations() (*Configuration, error) {
 	// Set the file name of the configurations file
 	viper.SetConfigName("config")
 	// Set the path to look for the configurations file
@@ -38,7 +41,7 @@ func LoadConfigurations() (*Configurations, error) {
 		return nil, fmt.Errorf("failed bind env due to: %v", err)
 	}
 
-	configuration := &Configurations{}
+	configuration := &Configuration{}
 
 	if err = viper.ReadInConfig(); err != nil {
 		return nil, fmt.Errorf("error reading config file, %s", err)
@@ -49,5 +52,7 @@ func LoadConfigurations() (*Configurations, error) {
 		return nil, fmt.Errorf("unable to decode into struct, %v", err)
 	}
 
+	confString, _ := json.MarshalIndent(configuration, "", " ")
+	zap.S().Info("Configuration:\n", string(confString))
 	return configuration, nil
 }

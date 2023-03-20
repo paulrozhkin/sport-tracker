@@ -9,15 +9,18 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/lib/pq"
 	"github.com/paulrozhkin/sport-tracker/config"
+	"go.uber.org/zap"
 )
 
 type Store struct {
 	db *sql.DB
 }
 
-func CreateAndMigrate(config *config.DatabaseConfigurations) (*Store, error) {
+func NewStore(cfg *config.Configuration,
+	logger *zap.SugaredLogger) (*Store, error) {
+	database := cfg.Database
 	psqlInfo := fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=%s",
-		config.DBUser, config.DBPassword, config.DBConnection, config.DBName, config.DBSslMode)
+		database.DBUser, database.DBPassword, database.DBConnection, database.DBName, database.DBSslMode)
 	db, err := sql.Open("postgres",
 		psqlInfo)
 	if err != nil {
@@ -33,7 +36,7 @@ func CreateAndMigrate(config *config.DatabaseConfigurations) (*Store, error) {
 	}
 	m, err := migrate.NewWithDatabaseInstance(
 		"file:///Data/Projects/sport-tracker/data/migrations",
-		config.DBName, driver)
+		database.DBName, driver)
 	if err != nil {
 		return nil, err
 	}
@@ -41,5 +44,6 @@ func CreateAndMigrate(config *config.DatabaseConfigurations) (*Store, error) {
 	if err != nil && !errors.Is(err, migrate.ErrNoChange) {
 		return nil, err
 	}
+	logger.Info("Database connected")
 	return &Store{db: db}, nil
 }

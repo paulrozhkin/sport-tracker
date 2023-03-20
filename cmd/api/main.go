@@ -1,10 +1,10 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"github.com/paulrozhkin/sport-tracker/config"
 	"github.com/paulrozhkin/sport-tracker/internal/infrastructure"
+	"go.uber.org/fx"
+	"go.uber.org/fx/fxevent"
 	"go.uber.org/zap"
 	"log"
 	"net/http"
@@ -19,26 +19,19 @@ func main() {
 	undo := zap.ReplaceGlobals(logger)
 	defer undo()
 
-	conf, err := config.LoadConfigurations()
-	if err != nil {
-		zap.S().Fatal("Failed to load config due to:", err)
-	}
-
-	confString, _ := json.MarshalIndent(conf, "", " ")
-	zap.S().Info("Configuration:\n", string(confString))
-
-	_, err = infrastructure.CreateAndMigrate(&conf.Database)
-	if err != nil {
-		zap.S().Fatalf("Connection fail due to: %s", err)
-	}
-
-	server := NewHTTPServer()
-
-	zap.S().Info("Server started on port: ", conf.Server.Port)
-	err = http.ListenAndServe(fmt.Sprintf("localhost:%d", conf.Server.Port), server.router)
-	if err != nil {
-		zap.S().Error("Server failed due to %v", err)
-
-		panic("Fatal error due to: " + err.Error())
-	}
+	fx.New(
+		fx.Provide(
+			zap.L,
+			zap.S,
+			config.LoadConfigurations,
+			NewHTTPServer,
+			NewServerRoute,
+			infrastructure.NewStore,
+		),
+		fx.WithLogger(func(log *zap.Logger) fxevent.Logger {
+			return &fxevent.ZapLogger{Logger: log}
+		}),
+		fx.Invoke(func(*infrastructure.Store) {}),
+		fx.Invoke(func(*http.Server) {}),
+	).Run()
 }
