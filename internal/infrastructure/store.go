@@ -2,6 +2,7 @@ package infrastructure
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
@@ -37,7 +38,7 @@ func CreateAndMigrate(config *config.DatabaseConfigurations) (*Store, error) {
 		return nil, err
 	}
 	err = m.Up()
-	if err != nil {
+	if err != nil && !errors.Is(err, migrate.ErrNoChange) {
 		return nil, err
 	}
 	return &Store{db: db}, nil
