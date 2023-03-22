@@ -16,7 +16,7 @@ type Store struct {
 	db *sql.DB
 }
 
-func NewStore(cfg *config.Configuration,
+func NewPostgresStore(cfg *config.Configuration,
 	logger *zap.SugaredLogger) (*Store, error) {
 	database := cfg.Database
 	psqlInfo := fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=%s",

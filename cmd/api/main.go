@@ -2,7 +2,11 @@ package main
 
 import (
 	"github.com/paulrozhkin/sport-tracker/config"
+	"github.com/paulrozhkin/sport-tracker/internal/http_server"
+	"github.com/paulrozhkin/sport-tracker/internal/http_server/routes"
 	"github.com/paulrozhkin/sport-tracker/internal/infrastructure"
+	"github.com/paulrozhkin/sport-tracker/internal/repositories"
+	"github.com/paulrozhkin/sport-tracker/internal/services"
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxevent"
 	"go.uber.org/zap"
@@ -24,14 +28,32 @@ func main() {
 			zap.L,
 			zap.S,
 			config.LoadConfigurations,
-			NewHTTPServer,
-			NewServerRoute,
-			infrastructure.NewStore,
+			http_server.NewHTTPServer,
+			infrastructure.NewPostgresStore,
+			fx.Annotate(
+				http_server.NewServerRoute,
+				fx.ParamTags(`group:"routes"`),
+			),
 		),
+		createServicesRegistration(),
+		createRoutesRegistration(),
 		fx.WithLogger(func(log *zap.Logger) fxevent.Logger {
 			return &fxevent.ZapLogger{Logger: log}
 		}),
 		fx.Invoke(func(*infrastructure.Store) {}),
 		fx.Invoke(func(*http.Server) {}),
 	).Run()
+}
+
+func createRoutesRegistration() fx.Option {
+	return fx.Provide(
+		routes.AsRoute(routes.NewAuthRoute),
+	)
+}
+
+func createServicesRegistration() fx.Option {
+	return fx.Provide(
+		services.NewUserService,
+		repositories.NewUsersRepository,
+	)
 }

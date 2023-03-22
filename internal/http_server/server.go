@@ -1,4 +1,4 @@
-package main
+package http_server
 
 import (
 	"context"
@@ -6,6 +6,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/paulrozhkin/sport-tracker/config"
+	"github.com/paulrozhkin/sport-tracker/internal/http_server/routes"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 	"net"
@@ -41,7 +42,8 @@ func NewHTTPServer(lc fx.Lifecycle,
 	return srv
 }
 
-func NewServerRoute() http.Handler {
+func NewServerRoute(routes []routes.Route,
+	logger *zap.SugaredLogger) http.Handler {
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
 	r.Use(middleware.RealIP)
@@ -49,6 +51,9 @@ func NewServerRoute() http.Handler {
 	r.Use(middleware.Recoverer)
 
 	r.Use(middleware.Timeout(60 * time.Second))
-	//r.Get("/test", authController.Auth)
+	for _, route := range routes {
+		handler := &HttpHandler{routeHandler: route, logger: logger}
+		r.Method(route.Method(), route.Pattern(), handler)
+	}
 	return r
 }

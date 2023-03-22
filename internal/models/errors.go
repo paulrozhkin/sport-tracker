@@ -5,6 +5,10 @@ import (
 	"go.uber.org/zap"
 )
 
+const (
+	ArgumentNullOrEmptyError = "can't be null or empty"
+)
+
 type ParamError struct {
 	Name   string `json:"name"`
 	Reason string `json:"reason"`
@@ -12,6 +16,10 @@ type ParamError struct {
 
 type ValidationError struct {
 	Errors []*ParamError
+}
+
+func (v *ValidationError) HasErrors() bool {
+	return len(v.Errors) > 0
 }
 
 func (v *ValidationError) AddError(fieldName string, validationErr error) {
