@@ -2,6 +2,7 @@ package http_server
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -30,7 +31,11 @@ func NewHTTPServer(lc fx.Lifecycle,
 				log.Infof("Server started on addr: %s", srv.Addr)
 				serveError := srv.Serve(ln)
 				if serveError != nil {
-					log.Errorf("Server failed due to %v", srv.Addr)
+					if errors.Is(http.ErrServerClosed, serveError) {
+						log.Info("Server stopped")
+					} else {
+						log.Errorf("Server failed due to %v", zap.Error(serveError))
+					}
 				}
 			}()
 			return nil

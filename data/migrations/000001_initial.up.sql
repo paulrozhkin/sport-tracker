@@ -9,7 +9,8 @@ CREATE TABLE IF NOT EXISTS users
     gender   numeric,
     height   numeric,
     created  timestamp NOT NULL,
-    updated  timestamp NOT NULL
+    updated  timestamp NOT NULL,
+    UNIQUE(username)
 );
 
 CREATE TABLE IF NOT EXISTS exercises
@@ -76,6 +77,7 @@ CREATE TABLE IF NOT EXISTS weight_statistic
     updated timestamp NOT NULL
 );
 
+CREATE INDEX IF NOT EXISTS users_username_idx ON users (username);
 CREATE INDEX IF NOT EXISTS workouts_statistic_user_workout_idx ON workouts_statistic (user_workout);
 CREATE INDEX IF NOT EXISTS workouts_plan_id_order_in_plan_idx ON workouts (plan_id, order_in_plan);
 

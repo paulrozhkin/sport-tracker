@@ -11,7 +11,7 @@ type User struct {
 	baseEntity
 	Username string
 	Password string
-	Name     string
-	Gender   UserGender
-	Height   int
+	Name     *string
+	Gender   *UserGender
+	Height   *int
 }

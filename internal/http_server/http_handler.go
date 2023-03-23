@@ -21,7 +21,7 @@ func (h *HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if createCommandError != nil {
 		h.logger.Error("Can't create command", zap.Error(createCommandError))
 		h.writeProblemToResponse(w,
-			createProblemFromError("", "", http.StatusInternalServerError, r, createCommandError))
+			createProblemFromError("", "", r, createCommandError))
 		return
 	}
 
@@ -38,14 +38,14 @@ func (h *HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			h.logger.Error("Failed to read request", zap.Error(err))
 			h.writeProblemToResponse(w,
-				createProblemFromError("", "", http.StatusInternalServerError, r, err))
+				createProblemFromError("", "", r, err))
 			return
 		}
 		parseError := json.Unmarshal(body, commandContext.CommandContent)
 		if parseError != nil {
 			h.logger.Error("Failed to unmarshal body", zap.Error(parseError))
 			h.writeProblemToResponse(w,
-				createProblemFromError("", "", http.StatusInternalServerError, r, parseError))
+				createProblemFromError("", "", r, parseError))
 			return
 		}
 	}
@@ -54,7 +54,7 @@ func (h *HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if validationError != nil {
 		h.logger.Error("Validation error", zap.Error(validationError))
 		h.writeProblemToResponse(w,
-			createProblemFromError("", "", http.StatusBadRequest, r, validationError))
+			createProblemFromError("", "", r, validationError))
 		return
 	}
 
@@ -62,7 +62,7 @@ func (h *HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if executionError != nil {
 		h.logger.Error("Failed to execute request", zap.Error(executionError))
 		h.writeProblemToResponse(w,
-			createProblemFromError("", "", http.StatusInternalServerError, r, executionError))
+			createProblemFromError("", "", r, executionError))
 		return
 	}
 
@@ -70,7 +70,7 @@ func (h *HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if marshalError != nil {
 		h.logger.Error("Can't marshal response", zap.Error(marshalError))
 		h.writeProblemToResponse(w,
-			createProblemFromError("", "", http.StatusInternalServerError, r, marshalError))
+			createProblemFromError("", "", r, marshalError))
 		return
 	}
 
@@ -78,7 +78,7 @@ func (h *HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if sendResponseErr != nil {
 		h.logger.Error("Failed to send response", zap.Error(sendResponseErr))
 		h.writeProblemToResponse(w,
-			createProblemFromError("", "", http.StatusInternalServerError, r, sendResponseErr))
+			createProblemFromError("", "", r, sendResponseErr))
 		return
 	}
 }
@@ -96,21 +96,23 @@ func (h *HttpHandler) writeProblemToResponse(w http.ResponseWriter, problem dto.
 	}
 }
 
-func createProblemFromError(title, detail string, status int, r *http.Request, err error) dto.ProblemDetails {
+func createProblemFromError(title, detail string, r *http.Request, err error) dto.ProblemDetails {
 	switch customErr := err.(type) {
 	case *models.ValidationError:
-		problem := createProblemFromRequest(title, detail, status, r)
+		problem := createProblemFromRequest(title, detail, http.StatusBadRequest, r)
 		problem.InvalidParams = customErr.Errors
 		return problem
 	case *models.NotFoundError:
-		problem := createProblemFromRequest(title, detail, http.StatusNotFound, r)
-		problem.Detail = customErr.Error()
+		problem := createProblemFromRequest("Entity not found", customErr.Error(), http.StatusNotFound, r)
+		return problem
+	case *models.AlreadyExistError:
+		problem := createProblemFromRequest("Entity already exist", customErr.Error(), http.StatusConflict, r)
 		return problem
 	default:
 		if detail == "" {
 			detail = err.Error()
 		}
-		return createProblemFromRequest(title, detail, status, r)
+		return createProblemFromRequest(title, detail, http.StatusInternalServerError, r)
 	}
 }
 
