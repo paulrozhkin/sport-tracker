@@ -48,6 +48,7 @@ func main() {
 func createRoutesRegistration() fx.Option {
 	return fx.Provide(
 		routes.AsRoute(routes.NewAuthRoute),
+		routes.AsRoute(routes.NewRegisterRoute),
 	)
 }
 

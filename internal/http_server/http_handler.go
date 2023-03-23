@@ -97,16 +97,21 @@ func (h *HttpHandler) writeProblemToResponse(w http.ResponseWriter, problem dto.
 }
 
 func createProblemFromError(title, detail string, status int, r *http.Request, err error) dto.ProblemDetails {
-	if validationError, ok := err.(*models.ValidationError); ok {
+	switch customErr := err.(type) {
+	case *models.ValidationError:
 		problem := createProblemFromRequest(title, detail, status, r)
-		problem.InvalidParams = validationError.Errors
+		problem.InvalidParams = customErr.Errors
 		return problem
-	} else {
+	case *models.NotFoundError:
+		problem := createProblemFromRequest(title, detail, http.StatusNotFound, r)
+		problem.Detail = customErr.Error()
+		return problem
+	default:
 		if detail == "" {
 			detail = err.Error()
 		}
+		return createProblemFromRequest(title, detail, status, r)
 	}
-	return createProblemFromRequest(title, detail, status, r)
 }
 
 func createProblemFromRequest(title, detail string, status int, r *http.Request) dto.ProblemDetails {

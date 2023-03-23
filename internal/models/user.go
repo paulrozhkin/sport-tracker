@@ -8,10 +8,10 @@ const (
 type UserGender int
 
 type User struct {
-	entity
-	username string
-	password string
-	name     string
-	gender   UserGender
-	height   int
+	baseEntity
+	Username string
+	Password string
+	Name     string
+	Gender   UserGender
+	Height   int
 }

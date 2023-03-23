@@ -13,11 +13,12 @@ import (
 )
 
 type Store struct {
-	db *sql.DB
+	Db *sql.DB
 }
 
 func NewPostgresStore(cfg *config.Configuration,
 	logger *zap.SugaredLogger) (*Store, error) {
+	// TODO: заменить на pgxpool
 	database := cfg.Database
 	psqlInfo := fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=%s",
 		database.DBUser, database.DBPassword, database.DBConnection, database.DBName, database.DBSslMode)
@@ -45,5 +46,5 @@ func NewPostgresStore(cfg *config.Configuration,
 		return nil, err
 	}
 	logger.Info("Database connected")
-	return &Store{db: db}, nil
+	return &Store{Db: db}, nil
 }

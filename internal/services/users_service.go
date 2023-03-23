@@ -13,6 +13,10 @@ func NewUserService(userRepository *repositories.UsersRepository) (*UsersService
 	return &UsersService{userRepository: userRepository}, nil
 }
 
-func (us *UsersService) CreateUser(credentials models.Credentials) (*models.User, error) {
-	return us.userRepository.CreateUser(credentials)
+func (us *UsersService) CreateUser(user models.User) (*models.User, error) {
+	return us.userRepository.CreateUser(user)
+}
+
+func (us *UsersService) GetUserByUsername(username string) (*models.User, error) {
+	return us.userRepository.GetUserByUsername(username)
 }

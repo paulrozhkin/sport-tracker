@@ -23,5 +23,5 @@ type ProblemDetails struct {
 	Status int `json:"status"`
 
 	// Invalid params in request
-	InvalidParams []*models.ParamError `json:"invalid-params"`
+	InvalidParams []*models.ParamError `json:"invalid-params,omitempty"`
 }
