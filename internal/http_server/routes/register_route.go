@@ -7,11 +7,12 @@ import (
 )
 
 type RegisterRoute struct {
-	userService *services.UsersService
+	userService  *services.UsersService
+	tokenService *services.TokenService
 }
 
-func NewRegisterRoute(userService *services.UsersService) *RegisterRoute {
-	return &RegisterRoute{userService: userService}
+func NewRegisterRoute(userService *services.UsersService, tokenService *services.TokenService) *RegisterRoute {
+	return &RegisterRoute{userService: userService, tokenService: tokenService}
 }
 
 func (*RegisterRoute) Method() string {
@@ -23,5 +24,5 @@ func (*RegisterRoute) Pattern() string {
 }
 
 func (a *RegisterRoute) NewRouteExecutor() (commands.ICommand, error) {
-	return commands.NewRegisterCommand(a.userService)
+	return commands.NewRegisterCommand(a.userService, a.tokenService)
 }

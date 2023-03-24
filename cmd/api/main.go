@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/paulrozhkin/sport-tracker/config"
 	"github.com/paulrozhkin/sport-tracker/internal/http_server"
+	"github.com/paulrozhkin/sport-tracker/internal/http_server/middlewares"
 	"github.com/paulrozhkin/sport-tracker/internal/http_server/routes"
 	"github.com/paulrozhkin/sport-tracker/internal/infrastructure"
 	"github.com/paulrozhkin/sport-tracker/internal/repositories"
@@ -56,5 +57,7 @@ func createServicesRegistration() fx.Option {
 	return fx.Provide(
 		services.NewUserService,
 		repositories.NewUsersRepository,
+		middlewares.NewAuthMiddleware,
+		services.NewTokenService,
 	)
 }

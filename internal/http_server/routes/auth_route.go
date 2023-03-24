@@ -7,11 +7,13 @@ import (
 )
 
 type AuthRoute struct {
-	userService *services.UsersService
+	userService  *services.UsersService
+	tokenService *services.TokenService
 }
 
-func NewAuthRoute(userService *services.UsersService) *AuthRoute {
-	return &AuthRoute{userService: userService}
+func NewAuthRoute(userService *services.UsersService,
+	tokenService *services.TokenService) *AuthRoute {
+	return &AuthRoute{userService: userService, tokenService: tokenService}
 }
 
 func (*AuthRoute) Method() string {
@@ -23,5 +25,5 @@ func (*AuthRoute) Pattern() string {
 }
 
 func (a *AuthRoute) NewRouteExecutor() (commands.ICommand, error) {
-	return commands.NewAuthCommand(a.userService)
+	return commands.NewAuthCommand(a.userService, a.tokenService)
 }

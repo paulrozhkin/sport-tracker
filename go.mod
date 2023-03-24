@@ -3,6 +3,8 @@ module github.com/paulrozhkin/sport-tracker
 go 1.20
 
 require (
+	github.com/dgrijalva/jwt-go/v4 v4.0.0-preview1
+	github.com/docker/distribution v2.8.1+incompatible
 	github.com/go-chi/chi/v5 v5.0.8
 	github.com/golang-migrate/migrate/v4 v4.15.2
 	github.com/google/uuid v1.3.0
