@@ -25,6 +25,10 @@ func (a *RegisterCommand) GetCommandContext() *CommandContext {
 	return a.context
 }
 
+func (*RegisterCommand) RequireAuthorization() bool {
+	return false
+}
+
 func (a *RegisterCommand) Validate() error {
 	validationError := new(models.ValidationError)
 	if a.credentials.Username == "" {

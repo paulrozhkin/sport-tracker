@@ -50,14 +50,17 @@ func createRoutesRegistration() fx.Option {
 	return fx.Provide(
 		routes.AsRoute(routes.NewAuthRoute),
 		routes.AsRoute(routes.NewRegisterRoute),
+		routes.AsRoute(routes.NewExercisesCreateRoute),
 	)
 }
 
 func createServicesRegistration() fx.Option {
 	return fx.Provide(
-		services.NewUserService,
+		services.NewUsersService,
 		repositories.NewUsersRepository,
 		middlewares.NewAuthMiddleware,
 		services.NewTokenService,
+		repositories.NewExercisesRepository,
+		services.NewExercisesService,
 	)
 }

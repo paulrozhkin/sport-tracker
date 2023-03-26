@@ -2,12 +2,17 @@ package utils
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/paulrozhkin/sport-tracker/internal/commands/dto"
 	"github.com/paulrozhkin/sport-tracker/internal/models"
 	"net/http"
 )
 
 func WriteProblemToResponse(w http.ResponseWriter, problem dto.ProblemDetails) error {
+	if problem.Status <= 200 || problem.Status >= 600 {
+		w.WriteHeader(http.StatusInternalServerError)
+		return fmt.Errorf("invalid http status in problem: %d, problem: %v", problem.Status, problem)
+	}
 	w.WriteHeader(problem.Status)
 	responseBytes, marshalError := json.MarshalIndent(problem, "", "  ")
 	if marshalError != nil {

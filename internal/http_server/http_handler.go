@@ -25,7 +25,6 @@ func (h *HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			utils.CreateProblemFromError(r, createCommandError))
 		return
 	}
-
 	commandContext := command.GetCommandContext()
 	if commandContext == nil {
 		h.logger.Error("Can't create command context")
@@ -52,7 +51,7 @@ func (h *HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	validationError := command.Validate()
 	if validationError != nil {
-		h.logger.Error("Validation error", zap.Error(validationError))
+		h.logger.Error("Request validation error", zap.Error(validationError))
 		h.sendErrorResponseAndLogError(w,
 			utils.CreateProblemFromError(r, validationError))
 		return
@@ -61,8 +60,7 @@ func (h *HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	response, executionError := command.Execute()
 	if executionError != nil {
 		h.logger.Error("Failed to execute request", zap.Error(executionError))
-		h.sendErrorResponseAndLogError(w,
-			utils.CreateProblemFromError(r, executionError))
+		h.sendErrorResponseAndLogError(w, utils.CreateProblemFromError(r, executionError))
 		return
 	}
 

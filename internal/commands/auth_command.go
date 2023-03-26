@@ -44,6 +44,10 @@ func (a *AuthCommand) Validate() error {
 	return nil
 }
 
+func (*AuthCommand) RequireAuthorization() bool {
+	return false
+}
+
 func (a *AuthCommand) Execute() (interface{}, error) {
 	user, err := a.usersService.GetUserByUsername(a.credentials.Username)
 	if err != nil {

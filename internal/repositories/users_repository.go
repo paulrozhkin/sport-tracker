@@ -35,6 +35,7 @@ func (ur *UsersRepository) CreateUser(user models.User) (*models.User, error) {
 	}
 	return ur.GetUserById(user.Id)
 }
+
 func (ur *UsersRepository) GetUserById(id string) (*models.User, error) {
 	query := `SELECT id, created, updated, username, password, name, gender, height
 				FROM users WHERE id=$1`
