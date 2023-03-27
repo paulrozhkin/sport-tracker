@@ -20,13 +20,16 @@ func NewExercisesRepository(store *infrastructure.Store,
 	return &ExercisesRepository{store: store, log: logger}, nil
 }
 
+// CreateExercise Create new exercise
 func (er *ExercisesRepository) CreateExercise(exercise models.Exercise) (*models.Exercise, error) {
 	exercise.FillForCreate()
 	query := `INSERT INTO exercises (id, created, updated, name, short_description, owner, complex) 
 				VALUES ($1, $2, $3, $4, $5, $6, $7)`
-	complexIds := make([]string, len(exercise.Complex))
-	for _, complexExercise := range exercise.Complex {
-		complexIds = append(complexIds, complexExercise.Id)
+	var complexIds []string
+	if exercise.Complex != nil {
+		for _, complexExercise := range exercise.Complex {
+			complexIds = append(complexIds, complexExercise.Id)
+		}
 	}
 	_, err := er.store.Pool.Exec(context.Background(), query, exercise.Id, exercise.Created, exercise.Updated,
 		exercise.Name, exercise.ShortDescription, exercise.Owner, complexIds)
@@ -37,6 +40,7 @@ func (er *ExercisesRepository) CreateExercise(exercise models.Exercise) (*models
 	return er.GetExerciseById(exercise.Id)
 }
 
+// GetExerciseById Get exercise by id with filled complex
 func (er *ExercisesRepository) GetExerciseById(id string) (*models.Exercise, error) {
 	query := `SELECT id, created, updated, name, short_description, owner, complex
 				FROM exercises WHERE id=$1`
@@ -51,6 +55,7 @@ func (er *ExercisesRepository) GetExerciseById(id string) (*models.Exercise, err
 	return exercise, nil
 }
 
+// GetExercises Get exercise without filled complex (only ids)
 func (er *ExercisesRepository) GetExercises() ([]*models.Exercise, error) {
 	query := `SELECT id, created, updated, name, short_description, owner, complex
 				FROM exercises`
@@ -71,29 +76,29 @@ func (er *ExercisesRepository) GetExercises() ([]*models.Exercise, error) {
 	return result, nil
 }
 
-//	func (ur *UsersRepository) GetUserByUsername(username string) (*models.User, error) {
-//		query := "SELECT id, created, updated, username, password, name, gender, height  FROM users WHERE username=$1"
-//		row := ur.store.Pool.QueryRow(context.Background(), query, username)
-//		user, err := rowToUser(row)
-//		if err != nil && errors.Is(pgx.ErrNoRows, err) {
-//			return nil, models.NewNotFoundError("user", username, "username")
-//		} else if err != nil {
-//			ur.log.Errorf("Failed to get user by username %s due to: %v", username, err)
-//			return nil, err
-//		}
-//		return user, nil
-//	}
+func (er *ExercisesRepository) fillComplex(exercise *models.Exercise) {
+	for _, exercise := range exercise.Complex {
+
+	}
+}
+
 func rowToExercise(row pgx.Row) (*models.Exercise, error) {
 	exercise := &models.Exercise{}
 	shortDescription := sql.NullString{}
+	var exerciseComplex []string
 	err := row.Scan(&exercise.Id, &exercise.Created,
 		&exercise.Updated, &exercise.Name,
-		shortDescription, &exercise.Owner, &exercise.Complex)
+		&shortDescription, &exercise.Owner, &exerciseComplex)
 	if err != nil {
 		return nil, err
 	}
 	if shortDescription.Valid {
 		exercise.ShortDescription = &shortDescription.String
+	}
+	for _, id := range exerciseComplex {
+		internalExercise := new(models.Exercise)
+		internalExercise.Id = id
+		exercise.Complex = append(exercise.Complex, internalExercise)
 	}
 	return exercise, nil
 }

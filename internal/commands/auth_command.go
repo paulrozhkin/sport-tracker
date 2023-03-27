@@ -10,6 +10,7 @@ import (
 )
 
 type AuthCommand struct {
+	UnauthorizedCommand
 	usersService *services.UsersService
 	credentials  *dto.Credentials
 	context      *CommandContext
@@ -42,10 +43,6 @@ func (a *AuthCommand) Validate() error {
 		return validationError
 	}
 	return nil
-}
-
-func (*AuthCommand) RequireAuthorization() bool {
-	return false
 }
 
 func (a *AuthCommand) Execute() (interface{}, error) {

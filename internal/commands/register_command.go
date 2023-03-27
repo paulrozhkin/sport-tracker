@@ -9,6 +9,7 @@ import (
 )
 
 type RegisterCommand struct {
+	UnauthorizedCommand
 	usersService *services.UsersService
 	credentials  *dto.Credentials
 	context      *CommandContext
@@ -23,10 +24,6 @@ func NewRegisterCommand(usersService *services.UsersService, tokenService *servi
 
 func (a *RegisterCommand) GetCommandContext() *CommandContext {
 	return a.context
-}
-
-func (*RegisterCommand) RequireAuthorization() bool {
-	return false
 }
 
 func (a *RegisterCommand) Validate() error {

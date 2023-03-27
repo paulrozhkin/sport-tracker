@@ -7,6 +7,7 @@ import (
 
 const (
 	ArgumentNullOrEmptyError = "can't be null or empty"
+	InvalidFormat            = "invalid format"
 )
 
 type ParamError struct {

@@ -27,7 +27,7 @@ func (t *TokenService) CreateToken(user *models.User) (string, error) {
 			ExpiresAt: jwt.At(time.Now().Add(time.Hour * 24 * 30 * 360)), // TODO: will change on OAuth later
 			IssuedAt:  jwt.At(time.Now()),
 		},
-		Id:       user.Id,
+		UserId:   user.Id,
 		Username: user.Username,
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/paulrozhkin/sport-tracker/config"
 	"github.com/paulrozhkin/sport-tracker/internal/http_server"
-	"github.com/paulrozhkin/sport-tracker/internal/http_server/middlewares"
 	"github.com/paulrozhkin/sport-tracker/internal/http_server/routes"
 	"github.com/paulrozhkin/sport-tracker/internal/infrastructure"
 	"github.com/paulrozhkin/sport-tracker/internal/repositories"
@@ -51,6 +50,8 @@ func createRoutesRegistration() fx.Option {
 		routes.AsRoute(routes.NewAuthRoute),
 		routes.AsRoute(routes.NewRegisterRoute),
 		routes.AsRoute(routes.NewExercisesCreateRoute),
+		routes.AsRoute(routes.NewExercisesGetRoute),
+		routes.AsRoute(routes.NewExercisesGetByIdRoute),
 	)
 }
 
@@ -58,7 +59,6 @@ func createServicesRegistration() fx.Option {
 	return fx.Provide(
 		services.NewUsersService,
 		repositories.NewUsersRepository,
-		middlewares.NewAuthMiddleware,
 		services.NewTokenService,
 		repositories.NewExercisesRepository,
 		services.NewExercisesService,

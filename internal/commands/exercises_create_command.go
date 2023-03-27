@@ -8,7 +8,7 @@ import (
 )
 
 type ExercisesCreateCommand struct {
-	AuthorizedSession
+	AuthorizedCommand
 	contextModel     *dto.ExerciseCreateModel
 	context          *CommandContext
 	exercisesService *services.ExercisesService
@@ -37,7 +37,13 @@ func (a *ExercisesCreateCommand) Validate() error {
 
 func (a *ExercisesCreateCommand) Execute() (interface{}, error) {
 	createModel := models.Exercise{Name: a.contextModel.Name,
-		ShortDescription: a.contextModel.ShortDescription}
+		ShortDescription: a.contextModel.ShortDescription,
+		Owner:            a.claims.UserId}
+	for _, complexId := range a.contextModel.Complex {
+		exercise := new(models.Exercise)
+		exercise.Id = complexId
+		createModel.Complex = append(createModel.Complex, exercise)
+	}
 	createdModel, err := a.exercisesService.CreateExercise(createModel)
 	if err != nil {
 		return nil, err

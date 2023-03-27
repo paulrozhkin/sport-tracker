@@ -25,6 +25,7 @@ func (us *ExercisesService) CreateExercise(exercise models.Exercise) (*models.Ex
 	if validationError.HasErrors() {
 		return nil, validationError
 	}
+	// TODO: validate recursion and hierarchical level exercise
 	return us.exerciseRepository.CreateExercise(exercise)
 }
 
