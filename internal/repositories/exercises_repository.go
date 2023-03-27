@@ -42,17 +42,43 @@ func (er *ExercisesRepository) CreateExercise(exercise models.Exercise) (*models
 
 // GetExerciseById Get exercise by id with filled complex
 func (er *ExercisesRepository) GetExerciseById(id string) (*models.Exercise, error) {
-	query := `SELECT id, created, updated, name, short_description, owner, complex
-				FROM exercises WHERE id=$1`
-	row := er.store.Pool.QueryRow(context.Background(), query, id)
-	exercise, err := rowToExercise(row)
-	if err != nil && errors.Is(pgx.ErrNoRows, err) {
-		return nil, models.NewNotFoundByIdError("exercise", id)
-	} else if err != nil {
-		er.log.Errorf("Failed to get user by id %s due to: %v", id, err)
+	query := `WITH RECURSIVE descendents AS (
+				  SELECT id, unnest(complex) AS child
+				  FROM exercises o
+				  WHERE id=$1
+					UNION ALL
+				  SELECT o.id, unnest(o.complex) AS child
+					FROM exercises o
+						JOIN descendents d ON o.id = d.child
+				
+				)
+				SELECT child, e.created, e.updated, e.name, e.short_description, e.owner,
+						ARRAY [descendents.id] as parentId FROM descendents
+					JOIN exercises e on descendents.child=e.id
+				UNION ALL
+				SELECT id, e.created, e.updated, e.name, e.short_description, e.owner, ARRAY [id] as parentId
+				  FROM exercises e
+				  WHERE id=$1
+				`
+	rows, err := er.store.Pool.Query(context.Background(), query, id)
+	if err != nil {
+		er.log.Errorf("Failed to get exercise by id %s due to: %v", id, err)
 		return nil, err
 	}
-	return exercise, nil
+
+	var allExercises []*models.Exercise
+	for rows.Next() {
+		exercise, rowScanErr := rowToExercise(rows)
+		if rowScanErr != nil && errors.Is(pgx.ErrNoRows, rowScanErr) {
+			return nil, models.NewNotFoundByIdError("exercise", id)
+		} else if rowScanErr != nil {
+			er.log.Errorf("Failed to get user by id %s due to: %v", id, rowScanErr)
+			return nil, rowScanErr
+		}
+		allExercises = append(allExercises, exercise)
+	}
+
+	return buildExerciseTree(createCopyWithoutLink(getRoot(allExercises)), allExercises), nil
 }
 
 // GetExercises Get exercise without filled complex (only ids)
@@ -76,12 +102,6 @@ func (er *ExercisesRepository) GetExercises() ([]*models.Exercise, error) {
 	return result, nil
 }
 
-func (er *ExercisesRepository) fillComplex(exercise *models.Exercise) {
-	for _, exercise := range exercise.Complex {
-
-	}
-}
-
 func rowToExercise(row pgx.Row) (*models.Exercise, error) {
 	exercise := &models.Exercise{}
 	shortDescription := sql.NullString{}
@@ -101,4 +121,32 @@ func rowToExercise(row pgx.Row) (*models.Exercise, error) {
 		exercise.Complex = append(exercise.Complex, internalExercise)
 	}
 	return exercise, nil
+}
+
+func buildExerciseTree(root *models.Exercise, allExercises []*models.Exercise) *models.Exercise {
+	for _, exerciseTreeItem := range allExercises {
+		// exerciseTreeItem.Complex[0] id is parent value in tree, can't be null
+		// exerciseTreeItem.Complex[0].Id != exerciseTreeItem.Id - is root
+		if exerciseTreeItem.Complex[0].Id == root.Id && exerciseTreeItem.Complex[0].Id != exerciseTreeItem.Id {
+			child := createCopyWithoutLink(exerciseTreeItem)
+			root.Complex = append(root.Complex, child)
+			buildExerciseTree(child, allExercises)
+		}
+	}
+	return root
+}
+
+func getRoot(allExercises []*models.Exercise) *models.Exercise {
+	for _, exerciseTreeItem := range allExercises {
+		if exerciseTreeItem.Complex[0].Id == exerciseTreeItem.Id {
+			return exerciseTreeItem
+		}
+	}
+	return nil
+}
+
+func createCopyWithoutLink(exerciseForCopy *models.Exercise) *models.Exercise {
+	result := *exerciseForCopy
+	result.Complex = nil
+	return &result
 }

@@ -11,6 +11,7 @@ import (
 	"github.com/paulrozhkin/sport-tracker/internal/services"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
+	"moul.io/chizap"
 	"net"
 	"net/http"
 	"time"
@@ -50,12 +51,16 @@ func NewHTTPServer(lc fx.Lifecycle,
 
 func NewServerRoute(routes []routes.Route,
 	logger *zap.SugaredLogger,
+	loggerRaw *zap.Logger,
 	config *config.Configuration,
 	tokenService *services.TokenService) http.Handler {
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
 	r.Use(middleware.RealIP)
-	r.Use(middleware.Logger)
+	r.Use(chizap.New(loggerRaw, &chizap.Opts{
+		WithReferer:   true,
+		WithUserAgent: true,
+	}))
 	r.Use(middleware.Recoverer)
 
 	timeout := time.Second * time.Duration(config.Server.RequestTimeoutSeconds)

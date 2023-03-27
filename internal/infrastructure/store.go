@@ -20,7 +20,7 @@ type Store struct {
 func NewPostgresStore(lc fx.Lifecycle,
 	cfg *config.Configuration,
 	logger *zap.SugaredLogger) (*Store, error) {
-	// TODO: заменить на pgxpool
+	logger.Info("Start initialize database")
 	database := cfg.Database
 	psqlInfo := fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=%s",
 		database.DBUser, database.DBPassword, database.DBConnection, database.DBName, database.DBSslMode)
@@ -30,7 +30,7 @@ func NewPostgresStore(lc fx.Lifecycle,
 		return nil, err
 	}
 	store := new(Store)
-	logger.Info("Database connected")
+	logger.Info("Database initialized")
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
 			pool, connectErr := pgxpool.New(ctx, psqlInfo)
@@ -43,6 +43,7 @@ func NewPostgresStore(lc fx.Lifecycle,
 				logger.Error("Failed to ping database", zap.Error(pingError))
 				return err
 			}
+			logger.Info("Database connected")
 			store.Pool = pool
 			return nil
 		},
