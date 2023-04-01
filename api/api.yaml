@@ -42,25 +42,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         "401":
           description: Authentication failed. Wrong password.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '404':
           description: Not found.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '500':
           description: Internal server error.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
   /api/v1/registration/:
     post:
       tags:
@@ -85,19 +85,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '404':
           description: Not found.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '500':
           description: Internal server error.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
 
   # Exercises
   /api/v1/exercises/:
@@ -122,19 +122,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '403':
           description: Forbidden.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
     post:
       tags:
         - Exercises
@@ -160,19 +160,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '403':
           description: Forbidden.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '500':
           description: Internal server error.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
   /api/v1/exercises/{id}:
     get:
       tags:
@@ -203,31 +203,31 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '401':
           description: Unauthorized.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '403':
           description: Forbidden.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '404':
           description: Not found.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '500':
           description: Internal server error.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
     put:
       tags:
         - Exercises
@@ -263,37 +263,37 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '401':
           description: Unauthorized.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '403':
           description: Forbidden.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '404':
           description: Not found.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '409':
           description: Not the owner trying to modify the entity.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '500':
           description: Internal server error.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
     delete:
       tags:
         - Exercises
@@ -319,31 +319,31 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '401':
           description: Unauthorized.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '403':
           description: Forbidden.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '404':
           description: Not found.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '500':
           description: Internal server error.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
 
   # Workout plans
   /api/v1/workouts/:
@@ -368,19 +368,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '403':
           description: Forbidden.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
     post:
       tags:
         - Workouts
@@ -406,19 +406,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '403':
           description: Forbidden.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '500':
           description: Internal server error.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
   /api/v1/workouts/{id}:
     get:
       tags:
@@ -449,31 +449,31 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '401':
           description: Unauthorized.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '403':
           description: Forbidden.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '404':
           description: Not found.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '500':
           description: Internal server error.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
     put:
       tags:
         - Workouts
@@ -509,31 +509,31 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '401':
           description: Unauthorized.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '403':
           description: Forbidden.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '404':
           description: Not found.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '500':
           description: Internal server error.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
     delete:
       tags:
         - Workouts
@@ -559,31 +559,31 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '401':
           description: Unauthorized.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '403':
           description: Forbidden.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '404':
           description: Not found.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '500':
           description: Internal server error.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
 
   # General statistic
   /api/v1/profile/statistic/:
@@ -606,19 +606,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '403':
           description: Forbidden.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
 
   # Weight
   /api/v1/profile/statistic/weight:
@@ -647,25 +647,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '401':
           description: Unauthorized.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '403':
           description: Forbidden.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '500':
           description: Internal server error.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
   /api/v1/profile/statistic/weight/{id}:
     put:
       tags:
@@ -702,31 +702,31 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '401':
           description: Unauthorized.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '403':
           description: Forbidden.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '404':
           description: Not found.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '500':
           description: Internal server error.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
     delete:
       tags:
         - Profile Statistic
@@ -752,31 +752,31 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '401':
           description: Unauthorized.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '403':
           description: Forbidden.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '404':
           description: Not found.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '500':
           description: Internal server error.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
 
   # Profile workouts
   /api/v1/profile/workouts/:
@@ -805,19 +805,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '403':
           description: Forbidden.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '500':
           description: Internal server error.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
   /api/v1/profile/workouts/active:
     delete:
       tags:
@@ -834,31 +834,31 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '401':
           description: Unauthorized.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '403':
           description: Forbidden.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '404':
           description: Not found.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '500':
           description: Internal server error.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
 
   /api/v1/profile/workouts/calendar/:
     get:
@@ -880,19 +880,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '403':
           description: Forbidden.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '500':
           description: Internal server error.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
   /api/v1/profile/workouts/{id}:
     post:
       tags:
@@ -919,31 +919,31 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '401':
           description: Unauthorized.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '403':
           description: Forbidden.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '404':
           description: Not found.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
         '500':
           description: Internal server error.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorModel'
+                $ref: '#/components/schemas/problemDetails'
 components:
   schemas:
     authenticationModel:
@@ -1166,7 +1166,7 @@ components:
           description: A short, human-readable description of invalid value
 
     # ProblemDetails https://www.rfc-editor.org/rfc/rfc7807
-    errorModel:
+    problemDetails:
       type: object
       properties:
         type:
