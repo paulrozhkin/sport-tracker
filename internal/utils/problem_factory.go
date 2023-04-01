@@ -37,6 +37,9 @@ func CreateProblemFromError(r *http.Request, err error) dto.ProblemDetails {
 	case *models.AlreadyExistError:
 		problem := createProblemFromRequestWithCustoms(r, "Entity already exist", customErr.Error(), http.StatusConflict)
 		return problem
+	case *models.NoRightsOnEntityError:
+		problem := createProblemFromRequestWithCustoms(r, "User hasn't rights on entity", customErr.Error(), http.StatusConflict)
+		return problem
 	default:
 		return createProblemFromRequestWithCustoms(r, "", err.Error(), http.StatusInternalServerError)
 	}

@@ -129,6 +129,10 @@ func (h *HttpHandler) parseContextParams(r *http.Request, commandContext *comman
 }
 
 func (h *HttpHandler) sendSuccessResponse(r *http.Request, w http.ResponseWriter, response interface{}) {
+	w.WriteHeader(http.StatusOK)
+	if response == nil {
+		return
+	}
 	responseBytes, marshalError := json.MarshalIndent(response, "", "  ")
 	if marshalError != nil {
 		h.logger.Error("Can't marshal response", zap.Error(marshalError))

@@ -16,3 +16,7 @@ func (entity *baseEntity) FillForCreate() {
 	entity.Created = time.Now().UTC()
 	entity.Updated = time.Now().UTC()
 }
+
+func (entity *baseEntity) FillForUpdate() {
+	entity.Updated = time.Now().UTC()
+}

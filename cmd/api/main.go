@@ -10,15 +10,22 @@ import (
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxevent"
 	"go.uber.org/zap"
-	"log"
 	"net/http"
 )
 
 func main() {
-	logger, err := zap.NewDevelopment()
-	if err != nil {
-		log.Fatal(err)
+	// TODO: refactoring with config from file
+	production := false
+	var logger *zap.Logger
+	if production {
+		loggerCfg := zap.NewProductionConfig()
+		//loggerCfg.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+		loggerCfg.OutputPaths = append(loggerCfg.OutputPaths, "./logs/sport-tracker.log")
+		logger = zap.Must(loggerCfg.Build())
+	} else {
+		logger, _ = zap.NewDevelopment()
 	}
+
 	defer logger.Sync()
 	undo := zap.ReplaceGlobals(logger)
 	defer undo()
@@ -52,6 +59,8 @@ func createRoutesRegistration() fx.Option {
 		routes.AsRoute(routes.NewExercisesCreateRoute),
 		routes.AsRoute(routes.NewExercisesGetRoute),
 		routes.AsRoute(routes.NewExercisesGetByIdRoute),
+		routes.AsRoute(routes.NewExercisesDeleteByIdRoute),
+		routes.AsRoute(routes.NewExercisesUpdateByIdRoute),
 	)
 }
 

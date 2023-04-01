@@ -40,6 +40,24 @@ func (er *ExercisesRepository) CreateExercise(exercise models.Exercise) (*models
 	return er.GetExerciseById(exercise.Id)
 }
 
+func (er *ExercisesRepository) UpdateExercise(exercise models.Exercise) (*models.Exercise, error) {
+	exercise.FillForUpdate()
+	query := `UPDATE exercises SET updated=$2, name=$3, short_description=$4, complex=$5 WHERE id=$1`
+	var complexIds []string
+	if exercise.Complex != nil {
+		for _, complexExercise := range exercise.Complex {
+			complexIds = append(complexIds, complexExercise.Id)
+		}
+	}
+	_, err := er.store.Pool.Exec(context.Background(), query, exercise.Id, exercise.Updated,
+		exercise.Name, exercise.ShortDescription, complexIds)
+	if err != nil {
+		er.log.Error("Failed to update exercise", err)
+		return nil, err
+	}
+	return er.GetExerciseById(exercise.Id)
+}
+
 // GetExerciseById Get exercise by id with filled complex
 func (er *ExercisesRepository) GetExerciseById(id string) (*models.Exercise, error) {
 	query := `WITH RECURSIVE descendents AS (
@@ -77,11 +95,28 @@ func (er *ExercisesRepository) GetExerciseById(id string) (*models.Exercise, err
 		}
 		allExercises = append(allExercises, exercise)
 	}
-
+	if len(allExercises) == 0 {
+		return nil, models.NewNotFoundByIdError("exercise", id)
+	}
 	return buildExerciseTree(createCopyWithoutLink(getRoot(allExercises)), allExercises), nil
 }
 
-// GetExercises Get exercise without filled complex (only ids)
+// GetExercisesByIdWithoutComplex Get exercise  by id without filled complex (only ids)
+func (er *ExercisesRepository) GetExercisesByIdWithoutComplex(id string) (*models.Exercise, error) {
+	query := `SELECT id, created, updated, name, short_description, owner, complex
+				FROM exercises WHERE id=$1`
+	row := er.store.Pool.QueryRow(context.Background(), query, id)
+	result, err := rowToExercise(row)
+	if err != nil && errors.Is(pgx.ErrNoRows, err) {
+		return nil, models.NewNotFoundByIdError("exercise", id)
+	} else if err != nil {
+		er.log.Errorf("Failed to get exercise by id %s due to: %v", id, err)
+		return nil, err
+	}
+	return result, nil
+}
+
+// GetExercises Get exercises without filled complex (only ids)
 func (er *ExercisesRepository) GetExercises() ([]*models.Exercise, error) {
 	query := `SELECT id, created, updated, name, short_description, owner, complex
 				FROM exercises`
@@ -100,6 +135,19 @@ func (er *ExercisesRepository) GetExercises() ([]*models.Exercise, error) {
 		result = append(result, exercise)
 	}
 	return result, nil
+}
+
+func (er *ExercisesRepository) DeleteExerciseById(id string) error {
+	query := `DELETE FROM exercises WHERE id = $1;`
+	res, err := er.store.Pool.Exec(context.Background(), query, id)
+	if err != nil {
+		return err
+	}
+	count := res.RowsAffected()
+	if count == 0 {
+		return models.NewNotFoundByIdError("exercise", id)
+	}
+	return nil
 }
 
 func rowToExercise(row pgx.Row) (*models.Exercise, error) {
