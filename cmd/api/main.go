@@ -56,11 +56,18 @@ func createRoutesRegistration() fx.Option {
 	return fx.Provide(
 		routes.AsRoute(routes.NewAuthRoute),
 		routes.AsRoute(routes.NewRegisterRoute),
+		// Exercises
 		routes.AsRoute(routes.NewExercisesCreateRoute),
 		routes.AsRoute(routes.NewExercisesGetRoute),
 		routes.AsRoute(routes.NewExercisesGetByIdRoute),
 		routes.AsRoute(routes.NewExercisesDeleteByIdRoute),
 		routes.AsRoute(routes.NewExercisesUpdateByIdRoute),
+		// Workouts
+		routes.AsRoute(routes.NewWorkoutsCreateRoute),
+		routes.AsRoute(routes.NewWorkoutsGetRoute),
+		routes.AsRoute(routes.NewWorkoutsGetByIdRoute),
+		routes.AsRoute(routes.NewWorkoutsUpdateByIdRoute),
+		routes.AsRoute(routes.NewWorkoutsDeleteByIdRoute),
 	)
 }
 
@@ -71,5 +78,7 @@ func createServicesRegistration() fx.Option {
 		services.NewTokenService,
 		repositories.NewExercisesRepository,
 		services.NewExercisesService,
+		services.NewWorkoutsService,
+		repositories.NewWorkoutsRepository,
 	)
 }
