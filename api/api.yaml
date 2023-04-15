@@ -15,6 +15,7 @@ tags:
   - name: Exercises
   - name: Profile Statistic
   - name: Profile Workouts
+  - name: Workout plans
   - name: Workouts
 paths:
   # Auth and registration
@@ -346,6 +347,246 @@ paths:
                 $ref: '#/components/schemas/problemDetails'
 
   # Workout plans
+  /api/v1/workoutPlans/:
+    get:
+      tags:
+        - Workout plans
+      summary: Get workout plans
+      operationId: getWorkoutPlans
+      security:
+        - bearerAuth: [ ]
+      responses:
+        "200":
+          description: Workouts
+          content:
+            application-json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/workoutPlan'
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problemDetails'
+        '403':
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problemDetails'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problemDetails'
+    post:
+      tags:
+        - Workout plans
+      operationId: createWorkoutPlan
+      summary: Create workout plan
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/workoutPlanCreateModel'
+        required: true
+      responses:
+        '200':
+          description: Created
+          content:
+            application-json:
+              schema:
+                $ref: '#/components/schemas/workoutPlanFullModel'
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problemDetails'
+        '403':
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problemDetails'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problemDetails'
+  /api/v1/workoutPlans/{id}:
+    get:
+      tags:
+        - Workout plans
+      operationId: getWorkoutPlanById
+      summary: Get workout plan by id
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Exercise
+          content:
+            application-json:
+              schema:
+                $ref: '#/components/schemas/workoutPlanFullModel'
+        '400':
+          description: Bad Request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problemDetails'
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problemDetails'
+        '403':
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problemDetails'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problemDetails'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problemDetails'
+    put:
+      tags:
+        - Workout plans
+      operationId: updateWorkoutPlan
+      summary: Update workout plan
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/workoutPlanCreateModel'
+        required: true
+      responses:
+        '200':
+          description: Updated
+          content:
+            application-json:
+              schema:
+                $ref: '#/components/schemas/workoutPlanFullModel'
+        '400':
+          description: Bad Request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problemDetails'
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problemDetails'
+        '403':
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problemDetails'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problemDetails'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problemDetails'
+    delete:
+      tags:
+        - Workout plans
+      operationId: deleteWorkoutPlan
+      summary: Delete workout plan
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Deleted
+        '400':
+          description: Bad Request. Id invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problemDetails'
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problemDetails'
+        '403':
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problemDetails'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problemDetails'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problemDetails'
+
+  # Workouts
   /api/v1/workouts/:
     get:
       tags:
@@ -946,6 +1187,7 @@ paths:
                 $ref: '#/components/schemas/problemDetails'
 components:
   schemas:
+    # Auth and registration
     authenticationModel:
       type: object
       properties:
@@ -963,6 +1205,8 @@ components:
           description: 'Password without encoding'
           type: string
           example: 'password'
+
+    # Weight
     weightStatistic:
       type: object
       properties:
@@ -983,6 +1227,8 @@ components:
         weight:
           type: integer
           example: 80
+
+    # General statistic
     statisticResponse:
       type: object
       properties:
@@ -996,6 +1242,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/weightStatistic'
+
+    # Exercises
     exerciseCreateModel:
       type: object
       properties:
@@ -1033,13 +1281,16 @@ components:
           description: Exercise composition (complex)
           items:
             $ref: '#/components/schemas/exercise'
-    workoutCreateModel:
+
+    # Workout plans
+    workoutPlanCreateModel:
       type: object
       properties:
         name:
           type: string
         shortDescription:
           type: string
+          nullable: true
         repeatable:
           type: boolean
         workouts:
@@ -1050,38 +1301,74 @@ components:
             type: array
             items:
               type: string
+    workoutPlan:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        shortDescription:
+          type: string
+        repeatable:
+          type: boolean
+    workoutPlanFullModel:
+      allOf:
+        - $ref: '#/components/schemas/workoutPlan'
+        - type: object
+          properties:
+            workouts:
+              type: array
+              description: All days workouts
+              items:
+                type: array
+                description: Workouts in plan
+                items:
+                  $ref: '#/components/schemas/workoutFullModel'
+
+    # Workouts
+    workoutCreateModel:
+      type: object
+      properties:
+        customName:
+          type: string
+          nullable: true
+        customDescription:
+          type: string
+          nullable: true
+        complex:
+          type: array
+          description: Exercises in workout
+          items:
+            description: Id of exercises
+            type: array
+            items:
+              type: string
     workout:
       type: object
       properties:
         id:
           type: string
           format: uuid
-        name:
+        customName:
           type: string
-        shortDescription:
+          nullable: true
+        customDescription:
           type: string
-        repeatable:
-          type: boolean
+          nullable: true
     workoutFullModel:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-        shortDescription:
-          type: string
-        repeatable:
-          type: boolean
-        workouts:
-          type: array
-          description: All days workouts
-          items:
-            type: array
-            description: Exercise composition (one workout)
-            items:
-              $ref: '#/components/schemas/exerciseFullModel'
+      allOf:
+        - $ref: '#/components/schemas/workout'
+        - type: object
+          properties:
+            complex:
+              type: array
+              description: Exercise composition (complex)
+              items:
+                $ref: '#/components/schemas/exerciseFullModel'
+
+    # Profile workouts
     DayOfWeek:
       type: string
       enum:
@@ -1155,6 +1442,7 @@ components:
           items:
             $ref: "#/components/schemas/workoutUpcoming"
 
+    # General
     paramError:
       type: object
       properties:
@@ -1164,7 +1452,6 @@ components:
         reason:
           type: string
           description: A short, human-readable description of invalid value
-
     # ProblemDetails https://www.rfc-editor.org/rfc/rfc7807
     problemDetails:
       type: object

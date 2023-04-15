@@ -25,14 +25,16 @@ Table workout_plans as WP {
   short_description         text
   repeatable                boolean
   owner                     uuid [ref: > U.id]
+  workouts                  uuid[] [ref: > E.id]
   created                   timestamp
   updated                   timestamp
 }
 
 Table workouts as W {
   id                        uuid [pk]
-  plan_id                   uuid [ref: > WP.id]
-  order_in_plan             numeric
+  custom_name               text
+  custom_description        text
+  owner                     uuid [ref: > U.id]
   complex                   uuid[] [ref: > E.id]
   created                   timestamp
   updated                   timestamp
