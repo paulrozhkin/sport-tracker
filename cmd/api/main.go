@@ -68,6 +68,12 @@ func createRoutesRegistration() fx.Option {
 		routes.AsRoute(routes.NewWorkoutsGetByIdRoute),
 		routes.AsRoute(routes.NewWorkoutsUpdateByIdRoute),
 		routes.AsRoute(routes.NewWorkoutsDeleteByIdRoute),
+		// Workout plans
+		routes.AsRoute(routes.NewWorkoutPlansCreateRoute),
+		routes.AsRoute(routes.NewWorkoutPlansGetRoute),
+		routes.AsRoute(routes.NewWorkoutPlansGetByIdRoute),
+		routes.AsRoute(routes.NewWorkoutPlansUpdateByIdRoute),
+		routes.AsRoute(routes.NewWorkoutPlansDeleteByIdRoute),
 	)
 }
 

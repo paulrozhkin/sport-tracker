@@ -57,3 +57,11 @@ func mapWorkoutModelToDto(exerciseModel *models.Workout) *dto.WorkoutFullModel {
 	}
 	return result
 }
+
+func mapWorkoutModelToShortDto(exerciseModel *models.Workout) *dto.WorkoutShortModel {
+	result := new(dto.WorkoutShortModel)
+	result.Id = exerciseModel.Id
+	result.CustomName = exerciseModel.CustomName
+	result.CustomDescription = exerciseModel.CustomDescription
+	return result
+}

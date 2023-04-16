@@ -1325,7 +1325,7 @@ components:
                 type: array
                 description: Workouts in plan
                 items:
-                  $ref: '#/components/schemas/workoutFullModel'
+                  $ref: '#/components/schemas/workout'
 
     # Workouts
     workoutCreateModel:

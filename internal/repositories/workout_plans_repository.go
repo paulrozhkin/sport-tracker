@@ -74,7 +74,7 @@ func (wpr *WorkoutPlansRepository) GetWorkoutPlanById(id string) (*models.Workou
 		return nil, err
 	}
 	for i, workout := range workoutPlan.Workouts {
-		fullModel, getErr := wpr.workoutsRepository.GetWorkoutById(workout.Id)
+		fullModel, getErr := wpr.workoutsRepository.GetWorkoutsByIdWithoutComplex(workout.Id)
 		if getErr != nil {
 			wpr.log.Errorf("Failed to get workout with id %s from workoutPlan %s due to: %v", workout.Id, id, err)
 			return nil, getErr

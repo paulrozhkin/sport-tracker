@@ -22,16 +22,16 @@ func NewRegisterCommand(usersService *services.UsersService, tokenService *servi
 	return &RegisterCommand{usersService: usersService, context: context, credentials: credentials, tokenService: tokenService}, nil
 }
 
-func (a *RegisterCommand) GetCommandContext() *CommandContext {
-	return a.context
+func (c *RegisterCommand) GetCommandContext() *CommandContext {
+	return c.context
 }
 
-func (a *RegisterCommand) Validate() error {
+func (c *RegisterCommand) Validate() error {
 	validationError := new(models.ValidationError)
-	if a.credentials.Username == "" {
+	if c.credentials.Username == "" {
 		validationError.AddError("username", errors.New(models.ArgumentNullOrEmptyError))
 	}
-	if a.credentials.Password == "" {
+	if c.credentials.Password == "" {
 		validationError.AddError("password", errors.New(models.ArgumentNullOrEmptyError))
 	}
 	if validationError.HasErrors() {
@@ -40,17 +40,17 @@ func (a *RegisterCommand) Validate() error {
 	return nil
 }
 
-func (a *RegisterCommand) Execute() (interface{}, error) {
-	hashedPassword, err := utils.HashPassword(a.credentials.Password)
+func (c *RegisterCommand) Execute() (interface{}, error) {
+	hashedPassword, err := utils.HashPassword(c.credentials.Password)
 	if err != nil {
 		return nil, err
 	}
-	user := models.User{Username: a.credentials.Username, Password: hashedPassword}
-	newUser, err := a.usersService.CreateUser(user)
+	user := models.User{Username: c.credentials.Username, Password: hashedPassword}
+	newUser, err := c.usersService.CreateUser(user)
 	if err != nil {
 		return nil, err
 	}
-	token, err := a.tokenService.CreateToken(newUser)
+	token, err := c.tokenService.CreateToken(newUser)
 	if err != nil {
 		return nil, err
 	}

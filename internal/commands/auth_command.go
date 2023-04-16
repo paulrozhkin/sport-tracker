@@ -27,16 +27,16 @@ func NewAuthCommand(usersService *services.UsersService, tokenService *services.
 		tokenService: tokenService}, nil
 }
 
-func (a *AuthCommand) GetCommandContext() *CommandContext {
-	return a.context
+func (c *AuthCommand) GetCommandContext() *CommandContext {
+	return c.context
 }
 
-func (a *AuthCommand) Validate() error {
+func (c *AuthCommand) Validate() error {
 	validationError := new(models.ValidationError)
-	if a.credentials.Username == "" {
+	if c.credentials.Username == "" {
 		validationError.AddError("username", errors.New(models.ArgumentNullOrEmptyError))
 	}
-	if a.credentials.Password == "" {
+	if c.credentials.Password == "" {
 		validationError.AddError("password", errors.New(models.ArgumentNullOrEmptyError))
 	}
 	if validationError.HasErrors() {
@@ -45,16 +45,16 @@ func (a *AuthCommand) Validate() error {
 	return nil
 }
 
-func (a *AuthCommand) Execute() (interface{}, error) {
-	user, err := a.usersService.GetUserByUsername(a.credentials.Username)
+func (c *AuthCommand) Execute() (interface{}, error) {
+	user, err := c.usersService.GetUserByUsername(c.credentials.Username)
 	if err != nil {
 		return nil, err
 	}
-	if !utils.CheckPasswordHash(a.credentials.Password, user.Password) {
+	if !utils.CheckPasswordHash(c.credentials.Password, user.Password) {
 		return nil, models.NewNotFoundError("users", fmt.Sprintf("(%s, secret)", user.Username),
 			"(username, password)")
 	}
-	token, err := a.tokenService.CreateToken(user)
+	token, err := c.tokenService.CreateToken(user)
 	if err != nil {
 		return nil, err
 	}

@@ -20,13 +20,13 @@ func NewExercisesCreateCommand(exerciseService *services.ExercisesService) (*Exe
 	return &ExercisesCreateCommand{context: context, exercisesService: exerciseService, contextModel: contextModel}, nil
 }
 
-func (a *ExercisesCreateCommand) GetCommandContext() *CommandContext {
-	return a.context
+func (c *ExercisesCreateCommand) GetCommandContext() *CommandContext {
+	return c.context
 }
 
-func (a *ExercisesCreateCommand) Validate() error {
+func (c *ExercisesCreateCommand) Validate() error {
 	validationError := new(models.ValidationError)
-	if a.contextModel.Name == "" {
+	if c.contextModel.Name == "" {
 		validationError.AddError("name", errors.New(models.ArgumentNullOrEmptyError))
 	}
 	if validationError.HasErrors() {
@@ -35,16 +35,16 @@ func (a *ExercisesCreateCommand) Validate() error {
 	return nil
 }
 
-func (a *ExercisesCreateCommand) Execute() (interface{}, error) {
-	createModel := models.Exercise{Name: a.contextModel.Name,
-		ShortDescription: a.contextModel.ShortDescription,
-		Owner:            a.claims.UserId}
-	for _, complexId := range a.contextModel.Complex {
+func (c *ExercisesCreateCommand) Execute() (interface{}, error) {
+	createModel := models.Exercise{Name: c.contextModel.Name,
+		ShortDescription: c.contextModel.ShortDescription,
+		Owner:            c.claims.UserId}
+	for _, complexId := range c.contextModel.Complex {
 		exercise := new(models.Exercise)
 		exercise.Id = complexId
 		createModel.Complex = append(createModel.Complex, exercise)
 	}
-	createdModel, err := a.exercisesService.CreateExercise(createModel)
+	createdModel, err := c.exercisesService.CreateExercise(createModel)
 	if err != nil {
 		return nil, err
 	}

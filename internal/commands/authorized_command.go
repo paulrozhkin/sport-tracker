@@ -10,6 +10,6 @@ func (*AuthorizedCommand) RequireAuthorization() bool {
 	return true
 }
 
-func (a *AuthorizedCommand) SetAuthorization(claims *models.Claims) {
-	a.claims = claims
+func (c *AuthorizedCommand) SetAuthorization(claims *models.Claims) {
+	c.claims = claims
 }

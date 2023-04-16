@@ -17,16 +17,16 @@ func NewWorkoutsGetCommandCommand(workoutService *services.WorkoutsService) (*Wo
 	return &WorkoutsGetCommand{context: context, workoutsService: workoutService}, nil
 }
 
-func (a *WorkoutsGetCommand) GetCommandContext() *CommandContext {
-	return a.context
+func (c *WorkoutsGetCommand) GetCommandContext() *CommandContext {
+	return c.context
 }
 
-func (a *WorkoutsGetCommand) Validate() error {
+func (c *WorkoutsGetCommand) Validate() error {
 	return nil
 }
 
-func (a *WorkoutsGetCommand) Execute() (interface{}, error) {
-	workouts, err := a.workoutsService.GetWorkouts()
+func (c *WorkoutsGetCommand) Execute() (interface{}, error) {
+	workouts, err := c.workoutsService.GetWorkouts()
 	if err != nil {
 		return nil, err
 	}
