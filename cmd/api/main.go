@@ -80,5 +80,7 @@ func createServicesRegistration() fx.Option {
 		services.NewExercisesService,
 		services.NewWorkoutsService,
 		repositories.NewWorkoutsRepository,
+		services.NewWorkoutPlansService,
+		repositories.NewWorkoutPlansRepository,
 	)
 }
