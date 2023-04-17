@@ -41,10 +41,14 @@ func LoadConfigurations() (*Configuration, error) {
 	viper.AutomaticEnv()
 	viper.SetEnvPrefix("TRACKER")
 
-	err := viper.BindEnv("server.port", "TRACKER_SERVER_PORT")
-	if err != nil {
-		return nil, fmt.Errorf("failed bind env due to: %v", err)
-	}
+	_ = viper.BindEnv("server.port", "TRACKER_SERVER_PORT")
+	_ = viper.BindEnv("server.host", "TRACKER_SERVER_HOST")
+	_ = viper.BindEnv("server.requestTimeoutSeconds", "TRACKER_SERVER_TIMEOUT")
+	_ = viper.BindEnv("database.dbname", "TRACKER_DATABASE_NAME")
+	_ = viper.BindEnv("database.dbuser", "TRACKER_DATABASE_USER")
+	_ = viper.BindEnv("database.dbpassword", "TRACKER_DATABASE_PASSWORD")
+	_ = viper.BindEnv("database.dbconnection", "TRACKER_DATABASE_CONNECTION")
+	_ = viper.BindEnv("database.dbsslmode", "TRACKER_DATABASE_SSL")
 
 	configuration := &Configuration{
 		Server: ServerConfigurations{
@@ -52,6 +56,7 @@ func LoadConfigurations() (*Configuration, error) {
 		},
 	}
 
+	var err error
 	if err = viper.ReadInConfig(); err != nil {
 		return nil, fmt.Errorf("error reading config file, %s", err)
 	}

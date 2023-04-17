@@ -26,7 +26,7 @@ func NewPostgresStore(lc fx.Lifecycle,
 		database.DBUser, database.DBPassword, database.DBConnection, database.DBName, database.DBSslMode)
 	err := migrateDatabase("file:///Data/Projects/sport-tracker/data/migrations", psqlInfo, logger)
 	if err != nil {
-		logger.Error("Failed to create migrator due to", zap.Error(err))
+		logger.Error("Failed to migrate due to", zap.Error(err))
 		return nil, err
 	}
 	store := new(Store)
@@ -63,6 +63,7 @@ func migrateDatabase(pathToMigrations, connectionUrl string, logger *zap.Sugared
 		pathToMigrations,
 		connectionUrl)
 	if err != nil {
+		logger.Info("Failed to create migration")
 		return err
 	}
 	err = m.Up()
