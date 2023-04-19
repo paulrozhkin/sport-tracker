@@ -4,18 +4,18 @@ services:
   gateway:
     image: paulrozhkin/sport-tracker:latest
     environment:
-      - "TRACKER_SERVER_HOST=127.0.0.1"
+      - "TRACKER_SERVER_HOST=0.0.0.0"
       - "TRACKER_SERVER_PORT=80"
       - "TRACKER_DATABASE_NAME=sport_tracker"
       - "TRACKER_DATABASE_USER=postgres"
       - "TRACKER_DATABASE_PASSWORD=sql"
-      - "TRACKER_DATABASE_CONNECTION=localhost"
+      - "TRACKER_DATABASE_CONNECTION=postgres:5433"
       - "TRACKER_DATABASE_SSL=disable"
       - "TRACKER_jwtSigningKey=<pass jwt signing key>"
     depends_on:
       - postgres
     ports:
-      - "8000:8000"
+      - "8080:80"
 
   postgres:
     image: postgres
@@ -25,10 +25,11 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=sql
       - POSTGRES_DB=sport_tracker
+      - PGPORT=5433
     ports:
-      - "5432:5432"
+      - "5433:5433"
     volumes:
       - postgres:/var/lib/postgresql/data/
 
-  volumes:
-    postgres:
+volumes:
+  postgres:

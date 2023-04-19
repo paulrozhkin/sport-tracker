@@ -24,7 +24,7 @@ func NewPostgresStore(lc fx.Lifecycle,
 	database := cfg.Database
 	psqlInfo := fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=%s",
 		database.DBUser, database.DBPassword, database.DBConnection, database.DBName, database.DBSslMode)
-	err := migrateDatabase("file:///Data/Projects/sport-tracker/data/migrations", psqlInfo, logger)
+	err := migrateDatabase("file://data/migrations", psqlInfo, logger)
 	if err != nil {
 		logger.Error("Failed to migrate due to", zap.Error(err))
 		return nil, err
