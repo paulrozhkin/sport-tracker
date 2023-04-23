@@ -60,13 +60,13 @@ CREATE TABLE IF NOT EXISTS user_workouts
 
 CREATE TABLE IF NOT EXISTS workouts_statistic
 (
-    id           uuid PRIMARY KEY,
-    user_workout uuid references user_workouts (id) NOT NULL,
-    workout      uuid references workouts (id)      NOT NULL,
-    skipped      boolean                            NOT NULL,
-    workout_date timestamp                          NOT NULL,
-    created      timestamp                          NOT NULL,
-    updated      timestamp                          NOT NULL
+    id             uuid PRIMARY KEY,
+    user_workout   uuid references user_workouts (id) NOT NULL,
+    workout        uuid references workouts (id)      NOT NULL,
+    workout_date   timestamp                          NOT NULL,
+    scheduled_date timestamp                          NOT NULL,
+    created        timestamp                          NOT NULL,
+    updated        timestamp                          NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS weight_statistic

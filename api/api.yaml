@@ -15,6 +15,7 @@ tags:
   - name: Exercises
   - name: Profile Statistic
   - name: Profile Workouts
+  - name: Profile Workouts Calendar
   - name: Workout plans
   - name: Workouts
 paths:
@@ -1101,12 +1102,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/problemDetails'
 
+  # Profile Workouts Calendar
   /api/v1/profile/workouts/calendar/:
     get:
       tags:
-        - Profile Workouts
+        - Profile Workouts Calendar
       operationId: getWorkoutCalendar
-      summary: Get workout calendar
+      summary: Get workout calendar for next two week, history and current workout
       security:
         - bearerAuth: [ ]
       responses:
@@ -1134,10 +1136,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/problemDetails'
-  /api/v1/profile/workouts/{id}:
+  /api/v1/profile/workouts/calendar/{id}:
     post:
       tags:
-        - Profile Workouts
+        - Profile Workouts Calendar
       operationId: confirmWorkoutVisit
       summary: Confirm workout visit
       security:
@@ -1155,6 +1157,60 @@ paths:
       responses:
         '200':
           description: Confirmed
+        '400':
+          description: Bad Request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problemDetails'
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problemDetails'
+        '403':
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problemDetails'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problemDetails'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problemDetails'
+    get:
+      tags:
+        - Profile Workouts Calendar
+      operationId: getWorkoutVisitById
+      summary: Get workout visit by id
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Exercise
+          content:
+            application-json:
+              schema:
+                $ref: '#/components/schemas/workoutStatistic'
         '400':
           description: Bad Request.
           content:
@@ -1395,25 +1451,53 @@ components:
         id:
           type: string
           format: uuid
+
+    # Profile Workouts Calendar
     workoutHistory:
       type: object
       properties:
         id:
           type: string
           format: uuid
-        date:
+        scheduled_date:
           type: string
           format: date-time
           example: '2023-07-21Z'
-        skipped:
-          type: boolean
+        workout_date:
+          type: string
+          format: date-time
+          example: '2023-07-21Z'
     workoutUpcoming:
       type: object
       properties:
-        date:
+        id:
+          description: 'Upcoming id. Not null for next two week'
+          type: string
+          format: uuid
+        scheduled_date:
           type: string
           format: date-time
           example: '2023-07-21Z'
+    workoutStatistic:
+      type: object
+      properties:
+        id:
+          description: Workout statistic id. Can be null if the training is not custom and the day has not come.
+          nullable: true
+          type: string
+          format: uuid
+        scheduled_date:
+          type: string
+          format: date-time
+          example: '2023-07-21Z'
+        workout_date:
+          type: string
+          format: date-time
+          example: '2023-07-21Z'
+        workout:
+          type: array
+          items:
+            $ref: '#/components/schemas/workoutFullModel'
     workoutCalendar:
       type: object
       properties:
@@ -1422,21 +1506,7 @@ components:
           items:
             $ref: "#/components/schemas/workoutHistory"
         current:
-          type: object
-          properties:
-            id:
-              description: Workout statistic id. Can be null if the training is not custom and the day has not come.
-              nullable: true
-              type: string
-              format: uuid
-            date:
-              type: string
-              format: date-time
-              example: '2023-07-21Z'
-            workout:
-              type: array
-              items:
-                $ref: '#/components/schemas/exerciseFullModel'
+          $ref: "#/components/schemas/workoutStatistic"
         upcoming:
           type: array
           items:
