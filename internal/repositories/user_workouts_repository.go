@@ -33,25 +33,20 @@ func (er *UserWorkoutsRepository) CreateUserWorkout(userWorkout models.UserWorko
 	return er.GetUserWorkoutById(userWorkout.Id)
 }
 
-//func (er *UserWorkoutsRepository) UpdateUserWorkout(userWorkout models.UserWorkout) (*models.UserWorkout, error) {
-//	userWorkout.FillForUpdate()
-//	query := `UPDATE userWorkouts SET updated=$2, name=$3, short_description=$4, complex=$5 WHERE id=$1`
-//	var complexIds []string
-//	if userWorkout.Complex != nil {
-//		for _, complexUserWorkout := range userWorkout.Complex {
-//			complexIds = append(complexIds, complexUserWorkout.Id)
-//		}
-//	}
-//	_, err := er.store.Pool.Exec(context.Background(), query, userWorkout.Id, userWorkout.Updated,
-//		userWorkout.Name, userWorkout.ShortDescription, complexIds)
-//	if err != nil {
-//		er.log.Error("Failed to update userWorkout", err)
-//		return nil, err
-//	}
-//	return er.GetUserWorkoutById(userWorkout.Id)
-//}
+func (er *UserWorkoutsRepository) UpdateUserWorkout(userWorkout models.UserWorkout) (*models.UserWorkout, error) {
+	userWorkout.FillForUpdate()
+	query := `UPDATE user_workouts SET updated=$2, active=$3, schedule=$4 WHERE id=$1`
+	_, err := er.store.Pool.Exec(context.Background(), query, userWorkout.Id, userWorkout.Updated,
+		userWorkout.Active, userWorkout.Schedule)
+	if err != nil {
+		er.log.Error("Failed to update userWorkout", err)
+		return nil, err
+	}
+	return er.GetUserWorkoutById(userWorkout.Id)
+}
 
 // GetActiveUserWorkout Get active userWorkout for userId
+// TODO: it's not repository pattern, it's DAO. Refactoring later
 func (er *UserWorkoutsRepository) GetActiveUserWorkout(userId string) (*models.UserWorkout, error) {
 	query := `SELECT id, created, updated, user_id, workout_plan, active, schedule
 				FROM user_workouts WHERE user_id=$1 and active=true`
@@ -80,19 +75,6 @@ func (er *UserWorkoutsRepository) GetUserWorkoutById(id string) (*models.UserWor
 	}
 	return result, nil
 }
-
-//func (er *UserWorkoutsRepository) DeleteUserWorkoutById(id string) error {
-//	query := `DELETE FROM userWorkouts WHERE id = $1;`
-//	res, err := er.store.Pool.Exec(context.Background(), query, id)
-//	if err != nil {
-//		return err
-//	}
-//	count := res.RowsAffected()
-//	if count == 0 {
-//		return models.NewNotFoundByIdError("userWorkout", id)
-//	}
-//	return nil
-//}
 
 func rowToUserWorkout(row pgx.Row) (*models.UserWorkout, error) {
 	userWorkout := &models.UserWorkout{WorkoutPlan: &models.WorkoutPlan{}}

@@ -76,6 +76,7 @@ func createRoutesRegistration() fx.Option {
 		routes.AsRoute(routes.NewWorkoutPlansDeleteByIdRoute),
 		// Profile workouts
 		routes.AsRoute(routes.NewProfileWorkoutsCreateRoute),
+		routes.AsRoute(routes.NewProfileWorkoutsDeleteRoute),
 	)
 }
 

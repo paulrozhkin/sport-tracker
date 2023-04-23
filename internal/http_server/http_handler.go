@@ -29,6 +29,13 @@ type HttpHandler struct {
 }
 
 func (h *HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	// Handle panic
+	defer func() {
+		if err := recover(); err != nil {
+			h.logger.Errorf("Can't execute command due to panic %v", err)
+			h.sendErrorResponseAndLogError(w, utils.CreateProblemFromRequest(r, http.StatusInternalServerError))
+		}
+	}()
 	// Create command to execute
 	command, createCommandError := h.routeHandler.NewRouteExecutor()
 	if createCommandError != nil {
