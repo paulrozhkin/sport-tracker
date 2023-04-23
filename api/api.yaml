@@ -1382,7 +1382,7 @@ components:
     profileWorkoutCreateModel:
       type: object
       properties:
-        workout:
+        workoutPlan:
           type: string
           format: uuid
         schedule:

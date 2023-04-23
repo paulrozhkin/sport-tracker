@@ -74,6 +74,8 @@ func createRoutesRegistration() fx.Option {
 		routes.AsRoute(routes.NewWorkoutPlansGetByIdRoute),
 		routes.AsRoute(routes.NewWorkoutPlansUpdateByIdRoute),
 		routes.AsRoute(routes.NewWorkoutPlansDeleteByIdRoute),
+		// Profile workouts
+		routes.AsRoute(routes.NewProfileWorkoutsCreateRoute),
 	)
 }
 
@@ -88,5 +90,7 @@ func createServicesRegistration() fx.Option {
 		repositories.NewWorkoutsRepository,
 		services.NewWorkoutPlansService,
 		repositories.NewWorkoutPlansRepository,
+		services.NewUserWorkoutsService,
+		repositories.NewUserWorkoutsRepository,
 	)
 }

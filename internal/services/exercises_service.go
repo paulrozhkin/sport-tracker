@@ -30,15 +30,11 @@ func (us *ExercisesService) CreateExercise(exercise models.Exercise) (*models.Ex
 }
 
 func (us *ExercisesService) UpdateExercise(exercise models.Exercise) (*models.Exercise, error) {
-	validationError := new(models.ValidationError)
 	if exercise.Id == "" {
 		return nil, fmt.Errorf("exercise id %s in UpdateExercise", models.ArgumentNullOrEmptyError)
 	}
 	if exercise.Name == "" {
 		return nil, fmt.Errorf("exercise name %s in UpdateExercise", models.ArgumentNullOrEmptyError)
-	}
-	if validationError.HasErrors() {
-		return nil, validationError
 	}
 	originalExercise, err := us.exerciseRepository.GetExercisesByIdWithoutComplex(exercise.Id)
 	if err != nil {
@@ -51,12 +47,8 @@ func (us *ExercisesService) UpdateExercise(exercise models.Exercise) (*models.Ex
 }
 
 func (us *ExercisesService) GetExerciseById(exerciseId string) (*models.Exercise, error) {
-	validationError := new(models.ValidationError)
 	if exerciseId == "" {
 		return nil, fmt.Errorf("exercise name %s in GetExerciseById", models.ArgumentNullOrEmptyError)
-	}
-	if validationError.HasErrors() {
-		return nil, validationError
 	}
 	return us.exerciseRepository.GetExerciseById(exerciseId)
 }
@@ -66,12 +58,8 @@ func (us *ExercisesService) GetExercises() ([]*models.Exercise, error) {
 }
 
 func (us *ExercisesService) DeleteExerciseById(exerciseId string) error {
-	validationError := new(models.ValidationError)
 	if exerciseId == "" {
 		return fmt.Errorf("exercise name %s in DeleteExerciseById", models.ArgumentNullOrEmptyError)
-	}
-	if validationError.HasErrors() {
-		return validationError
 	}
 	return us.exerciseRepository.DeleteExerciseById(exerciseId)
 }

@@ -15,23 +15,15 @@ func NewWorkoutPlansService(workoutPlanRepository *repositories.WorkoutPlansRepo
 }
 
 func (ws *WorkoutPlansService) CreateWorkoutPlan(workoutPlan models.WorkoutPlan) (*models.WorkoutPlan, error) {
-	validationError := new(models.ValidationError)
 	if workoutPlan.Owner == "" {
 		return nil, fmt.Errorf("workoutPlan owner %s in CreateWorkoutPlan", models.ArgumentNullOrEmptyError)
-	}
-	if validationError.HasErrors() {
-		return nil, validationError
 	}
 	return ws.workoutPlanRepository.CreateWorkoutPlan(workoutPlan)
 }
 
 func (ws *WorkoutPlansService) UpdateWorkoutPlan(workoutPlan models.WorkoutPlan) (*models.WorkoutPlan, error) {
-	validationError := new(models.ValidationError)
 	if workoutPlan.Id == "" {
 		return nil, fmt.Errorf("workoutPlan id %s in UpdateWorkoutPlan", models.ArgumentNullOrEmptyError)
-	}
-	if validationError.HasErrors() {
-		return nil, validationError
 	}
 	originalWorkoutPlan, err := ws.workoutPlanRepository.GetWorkoutPlansByIdWithoutComplex(workoutPlan.Id)
 	if err != nil {
@@ -44,12 +36,8 @@ func (ws *WorkoutPlansService) UpdateWorkoutPlan(workoutPlan models.WorkoutPlan)
 }
 
 func (ws *WorkoutPlansService) GetWorkoutPlanById(workoutPlanId string) (*models.WorkoutPlan, error) {
-	validationError := new(models.ValidationError)
 	if workoutPlanId == "" {
 		return nil, fmt.Errorf("workoutPlan name %s in GetWorkoutPlanById", models.ArgumentNullOrEmptyError)
-	}
-	if validationError.HasErrors() {
-		return nil, validationError
 	}
 	return ws.workoutPlanRepository.GetWorkoutPlanById(workoutPlanId)
 }
@@ -59,12 +47,8 @@ func (ws *WorkoutPlansService) GetWorkoutPlans() ([]*models.WorkoutPlan, error) 
 }
 
 func (ws *WorkoutPlansService) DeleteWorkoutPlanById(workoutPlanId string) error {
-	validationError := new(models.ValidationError)
 	if workoutPlanId == "" {
 		return fmt.Errorf("workoutPlan name %s in DeleteWorkoutPlanById", models.ArgumentNullOrEmptyError)
-	}
-	if validationError.HasErrors() {
-		return validationError
 	}
 	return ws.workoutPlanRepository.DeleteWorkoutPlanById(workoutPlanId)
 }
