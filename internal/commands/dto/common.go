@@ -1,6 +1,11 @@
 package dto
 
-import "github.com/paulrozhkin/sport-tracker/internal/models"
+import (
+	"fmt"
+	"github.com/paulrozhkin/sport-tracker/internal/models"
+	"strings"
+	"time"
+)
 
 // ProblemDetails https://www.rfc-editor.org/rfc/rfc7807
 type ProblemDetails struct {
@@ -24,4 +29,27 @@ type ProblemDetails struct {
 
 	// Invalid params in request
 	InvalidParams []*models.ParamError `json:"invalid-params,omitempty"`
+}
+
+// JsonDate Date in ISO 8601 format
+type JsonDate struct {
+	time.Time
+}
+
+const layout = time.RFC3339
+
+func (c *JsonDate) UnmarshalJSON(b []byte) (err error) {
+	s := strings.Trim(string(b), `"`) // remove quotes
+	if s == "null" {
+		return
+	}
+	c.Time, err = time.Parse(layout, s)
+	return
+}
+
+func (c JsonDate) MarshalJSON() ([]byte, error) {
+	if c.Time.IsZero() {
+		return nil, nil
+	}
+	return []byte(fmt.Sprintf(`"%s"`, c.Time.Format(layout))), nil
 }

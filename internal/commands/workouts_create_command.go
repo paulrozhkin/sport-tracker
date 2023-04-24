@@ -47,21 +47,21 @@ func (c *WorkoutsCreateCommand) Execute() (interface{}, error) {
 	return mapWorkoutModelToDto(createdModel), nil
 }
 
-func mapWorkoutModelToDto(exerciseModel *models.Workout) *dto.WorkoutFullModel {
+func mapWorkoutModelToDto(workoutModel *models.Workout) *dto.WorkoutFullModel {
 	result := new(dto.WorkoutFullModel)
-	result.Id = exerciseModel.Id
-	result.CustomName = exerciseModel.CustomName
-	result.CustomDescription = exerciseModel.CustomDescription
-	for _, complexItem := range exerciseModel.Complex {
+	result.Id = workoutModel.Id
+	result.CustomName = workoutModel.CustomName
+	result.CustomDescription = workoutModel.CustomDescription
+	for _, complexItem := range workoutModel.Complex {
 		result.Complex = append(result.Complex, mapExerciseModelToDto(complexItem))
 	}
 	return result
 }
 
-func mapWorkoutModelToShortDto(exerciseModel *models.Workout) *dto.WorkoutShortModel {
+func mapWorkoutModelToShortDto(workoutModel *models.Workout) *dto.WorkoutShortModel {
 	result := new(dto.WorkoutShortModel)
-	result.Id = exerciseModel.Id
-	result.CustomName = exerciseModel.CustomName
-	result.CustomDescription = exerciseModel.CustomDescription
+	result.Id = workoutModel.Id
+	result.CustomName = workoutModel.CustomName
+	result.CustomDescription = workoutModel.CustomDescription
 	return result
 }

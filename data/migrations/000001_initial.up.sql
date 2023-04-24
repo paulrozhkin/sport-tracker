@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS workouts_statistic
     id             uuid PRIMARY KEY,
     user_workout   uuid references user_workouts (id) NOT NULL,
     workout        uuid references workouts (id)      NOT NULL,
-    workout_date   timestamp                          NOT NULL,
+    workout_date   timestamp,
     scheduled_date timestamp                          NOT NULL,
     created        timestamp                          NOT NULL,
     updated        timestamp                          NOT NULL

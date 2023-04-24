@@ -1464,17 +1464,8 @@ components:
           format: date-time
           example: '2023-07-21Z'
         workout_date:
-          type: string
-          format: date-time
-          example: '2023-07-21Z'
-    workoutUpcoming:
-      type: object
-      properties:
-        id:
-          description: 'Upcoming id. Not null for next two week'
-          type: string
-          format: uuid
-        scheduled_date:
+          description: 'Confirmed training day. Can be null if the workout has not yet started/was skipped.'
+          nullable: true
           type: string
           format: date-time
           example: '2023-07-21Z'
@@ -1510,7 +1501,7 @@ components:
         upcoming:
           type: array
           items:
-            $ref: "#/components/schemas/workoutUpcoming"
+            $ref: "#/components/schemas/workoutHistory"
 
     # General
     paramError:
