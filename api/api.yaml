@@ -1157,6 +1157,10 @@ paths:
       responses:
         '200':
           description: Confirmed
+          content:
+            application-json:
+              schema:
+                $ref: '#/components/schemas/workoutVisit'
         '400':
           description: Bad Request.
           content:
@@ -1459,16 +1463,16 @@ components:
         id:
           type: string
           format: uuid
-        scheduled_date:
+        scheduledDate:
           type: string
           format: date-time
-          example: '2023-07-21Z'
-        workout_date:
+          example: '2023-07-21T00:00:00Z'
+        workoutDate:
           description: 'Confirmed training day. Can be null if the workout has not yet started/was skipped.'
           nullable: true
           type: string
           format: date-time
-          example: '2023-07-21Z'
+          example: '2023-07-21T00:00:00Z'
     workoutStatistic:
       type: object
       properties:
@@ -1477,14 +1481,14 @@ components:
           nullable: true
           type: string
           format: uuid
-        scheduled_date:
+        scheduledDate:
           type: string
           format: date-time
-          example: '2023-07-21Z'
-        workout_date:
+          example: '2023-07-21T00:00:00Z'
+        workoutDate:
           type: string
           format: date-time
-          example: '2023-07-21Z'
+          example: '2023-07-21T00:00:00Z'
         workout:
           type: array
           items:
@@ -1502,7 +1506,15 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/workoutHistory"
-
+    workoutVisit:
+      type: object
+      properties:
+        comment:
+          type: string
+        workoutDate:
+          type: string
+          format: date-time
+          example: '2023-07-21T00:00:00Z'
     # General
     paramError:
       type: object

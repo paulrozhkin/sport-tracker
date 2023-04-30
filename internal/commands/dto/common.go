@@ -44,6 +44,9 @@ func (c *JsonDate) UnmarshalJSON(b []byte) (err error) {
 		return
 	}
 	c.Time, err = time.Parse(layout, s)
+	if err != nil {
+		return err
+	}
 	return
 }
 

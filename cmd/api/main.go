@@ -79,6 +79,7 @@ func createRoutesRegistration() fx.Option {
 		routes.AsRoute(routes.NewProfileWorkoutsDeleteRoute),
 		// Profile workouts calendar
 		routes.AsRoute(routes.NewProfileWorkoutsCalendarGetRoute),
+		routes.AsRoute(routes.NewProfileWorkoutsCalendarVisitRoute),
 	)
 }
 

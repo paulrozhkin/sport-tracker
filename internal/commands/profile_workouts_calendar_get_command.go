@@ -36,34 +36,40 @@ func (c *ProfileWorkoutsCalendarGetCommand) Execute() (interface{}, error) {
 func mapWorkoutsCalendarToDto(calendar *models.WorkoutsCalendar) *dto.WorkoutsCalendarModel {
 	result := new(dto.WorkoutsCalendarModel)
 	for _, historyItem := range calendar.History {
-		scheduledDate := dto.JsonDate{Time: historyItem.ScheduledDate}
-		var workoutDate *dto.JsonDate
-		if historyItem.WorkoutDate != nil {
-			workoutDate = &dto.JsonDate{Time: *historyItem.WorkoutDate}
-		}
-		result.History = append(result.History, &dto.WorkoutStatisticModel{Id: historyItem.Id,
-			ScheduledDate: scheduledDate, WorkoutDate: workoutDate})
+		result.History = append(result.History, mapWorkoutStatisticToShortDto(historyItem))
 	}
 
 	if calendar.Current != nil {
-		result.Current = new(dto.WorkoutStatisticModel)
-		result.Current.Id = calendar.Current.Id
-		result.Current.ScheduledDate = dto.JsonDate{Time: calendar.Current.ScheduledDate}
-		if calendar.Current.WorkoutDate != nil {
-			result.Current.WorkoutDate = &dto.JsonDate{Time: *calendar.Current.WorkoutDate}
-		}
-		result.Current.Workout = mapWorkoutModelToDto(calendar.Current.Workout)
+		result.Current = mapWorkoutStatisticToDto(calendar.Current)
 	}
 
 	for _, historyItem := range calendar.Upcoming {
-		scheduledDate := dto.JsonDate{Time: historyItem.ScheduledDate}
-		var workoutDate *dto.JsonDate
-		if historyItem.WorkoutDate != nil {
-			workoutDate = &dto.JsonDate{Time: *historyItem.WorkoutDate}
-		}
-		result.Upcoming = append(result.Upcoming, &dto.WorkoutStatisticModel{Id: historyItem.Id,
-			ScheduledDate: scheduledDate, WorkoutDate: workoutDate})
+		result.Upcoming = append(result.Upcoming, mapWorkoutStatisticToShortDto(historyItem))
 	}
 
+	return result
+}
+
+func mapWorkoutStatisticToDto(workoutStatistic *models.WorkoutStatistic) *dto.WorkoutStatisticModel {
+	result := new(dto.WorkoutStatisticModel)
+	result.Id = workoutStatistic.Id
+	result.ScheduledDate = dto.JsonDate{Time: workoutStatistic.ScheduledDate}
+	if workoutStatistic.WorkoutDate != nil {
+		result.WorkoutDate = &dto.JsonDate{Time: *workoutStatistic.WorkoutDate}
+	}
+	result.Comment = workoutStatistic.Comment
+	if workoutStatistic.Workout != nil {
+		result.Workout = mapWorkoutModelToDto(workoutStatistic.Workout)
+	}
+	return result
+}
+
+func mapWorkoutStatisticToShortDto(workoutStatistic *models.WorkoutStatistic) *dto.WorkoutStatisticModel {
+	result := new(dto.WorkoutStatisticModel)
+	result.Id = workoutStatistic.Id
+	result.ScheduledDate = dto.JsonDate{Time: workoutStatistic.ScheduledDate}
+	if workoutStatistic.WorkoutDate != nil {
+		result.WorkoutDate = &dto.JsonDate{Time: *workoutStatistic.WorkoutDate}
+	}
 	return result
 }

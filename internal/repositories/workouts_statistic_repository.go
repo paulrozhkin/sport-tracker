@@ -45,7 +45,7 @@ func (wr *WorkoutsStatisticRepository) GetShortWorkoutsStatisticByUser(userId st
 
 // GetWorkoutStatisticById Get workoutsStatistic  by id
 func (wr *WorkoutsStatisticRepository) GetWorkoutStatisticById(id string) (*models.WorkoutStatistic, error) {
-	query := `SELECT id, created, updated, user_workout, workout, workout_date, scheduled_date
+	query := `SELECT id, created, updated, user_workout, workout, workout_date, scheduled_date, comment
 					FROM workouts_statistic WHERE id=$1`
 	row := wr.store.Pool.QueryRow(context.Background(), query, id)
 	result, err := rowToWorkoutStatistic(row)
@@ -56,6 +56,18 @@ func (wr *WorkoutsStatisticRepository) GetWorkoutStatisticById(id string) (*mode
 		return nil, err
 	}
 	return result, nil
+}
+
+func (wr *WorkoutsStatisticRepository) UpdateWorkoutsStatistic(workoutsStatistic models.WorkoutStatistic) (*models.WorkoutStatistic, error) {
+	workoutsStatistic.FillForUpdate()
+	query := `UPDATE workouts_statistic SET updated=$2, workout_date=$3, comment=$4 WHERE id=$1`
+	_, err := wr.store.Pool.Exec(context.Background(), query, workoutsStatistic.Id, workoutsStatistic.Updated,
+		workoutsStatistic.WorkoutDate, workoutsStatistic.Comment)
+	if err != nil {
+		wr.log.Error("Failed to update workoutsStatistic", err)
+		return nil, err
+	}
+	return wr.GetWorkoutStatisticById(workoutsStatistic.Id)
 }
 
 // // CreateWorkoutStatistic Create new workoutsStatistic
@@ -73,17 +85,7 @@ func (wr *WorkoutsStatisticRepository) GetWorkoutStatisticById(id string) (*mode
 //		return er.GetWorkoutsStatisticById(workoutsStatistic.Id)
 //	}
 //
-//	func (er *WorkoutsStatisticRepository) UpdateWorkoutsStatistic(workoutsStatistic models.WorkoutStatistic) (*models.WorkoutStatistic, error) {
-//		workoutsStatistic.FillForUpdate()
-//		query := `UPDATE user_workouts SET updated=$2, active=$3, schedule=$4 WHERE id=$1`
-//		_, err := er.store.Pool.Exec(context.Background(), query, workoutsStatistic.Id, workoutsStatistic.Updated,
-//			workoutsStatistic.Active, workoutsStatistic.Schedule)
-//		if err != nil {
-//			er.log.Error("Failed to update workoutsStatistic", err)
-//			return nil, err
-//		}
-//		return er.GetWorkoutsStatisticById(workoutsStatistic.Id)
-//	}
+
 //
 // // GetActiveWorkoutsStatistic Get active workoutsStatistic for userId
 //
@@ -123,7 +125,8 @@ func rowToWorkoutStatistic(row pgx.Row) (*models.WorkoutStatistic, error) {
 		&workoutsStatistic.UserWorkout.Id,
 		&workoutsStatistic.Workout.Id,
 		&workoutsStatistic.WorkoutDate,
-		&workoutsStatistic.ScheduledDate)
+		&workoutsStatistic.ScheduledDate,
+		&workoutsStatistic.Comment)
 	if err != nil {
 		return nil, err
 	}

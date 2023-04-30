@@ -66,3 +66,24 @@ func (us *UserWorkoutsCalendarService) GetCalendarForUser(userId string) (*model
 
 	return calendar, nil
 }
+
+func (us *UserWorkoutsCalendarService) ConfirmVisit(confirmModel models.ConfirmVisit) (*models.WorkoutStatistic, error) {
+	if confirmModel.WorkoutVisitId == "" {
+		return nil, fmt.Errorf("userId %s in GetCalendarForUser", models.ArgumentNullOrEmptyError)
+	}
+	statistic, err := us.workoutsStatisticRepository.GetWorkoutStatisticById(confirmModel.WorkoutVisitId)
+	if err != nil {
+		return nil, err
+	}
+	statistic.Comment = confirmModel.Comment
+	statistic.WorkoutDate = confirmModel.WorkoutDate
+	workout, err := us.workoutsStatisticRepository.UpdateWorkoutsStatistic(*statistic)
+	if err != nil {
+		return nil, err
+	}
+	workout.Workout, err = us.workoutsService.GetWorkoutById(workout.Workout.Id)
+	if err != nil {
+		return nil, err
+	}
+	return workout, nil
+}

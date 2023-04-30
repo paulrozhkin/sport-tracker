@@ -8,4 +8,5 @@ type WorkoutStatistic struct {
 	Workout       *Workout
 	WorkoutDate   *time.Time
 	ScheduledDate time.Time
+	Comment       *string
 }

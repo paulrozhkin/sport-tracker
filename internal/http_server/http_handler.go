@@ -65,6 +65,7 @@ func (h *HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		if parseBodyError != nil {
 			h.sendErrorResponseAndLogError(w,
 				utils.CreateProblemFromError(r, parseBodyError))
+			return
 		}
 	}
 	// Parse url params to context map
@@ -123,7 +124,7 @@ func (h *HttpHandler) parseContextBody(r *http.Request, commandContext *commands
 	parseError := json.Unmarshal(body, commandContext.CommandContent)
 	if parseError != nil {
 		h.logger.Error("Failed to unmarshal body", zap.Error(parseError))
-		return err
+		return parseError
 	}
 	return nil
 }

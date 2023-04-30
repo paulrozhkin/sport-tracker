@@ -65,6 +65,7 @@ CREATE TABLE IF NOT EXISTS workouts_statistic
     workout        uuid references workouts (id)      NOT NULL,
     workout_date   timestamp,
     scheduled_date timestamp                          NOT NULL,
+    comment        text,
     created        timestamp                          NOT NULL,
     updated        timestamp                          NOT NULL
 );
