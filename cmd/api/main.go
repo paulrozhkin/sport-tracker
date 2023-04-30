@@ -48,6 +48,7 @@ func main() {
 			return &fxevent.ZapLogger{Logger: log}
 		}),
 		fx.Invoke(func(*infrastructure.Store) {}),
+		fx.Invoke(func(*services.UserWorkoutsCalendarGenerator) {}),
 		fx.Invoke(func(*http.Server) {}),
 	).Run()
 }
@@ -98,5 +99,6 @@ func createServicesRegistration() fx.Option {
 		repositories.NewUserWorkoutsRepository,
 		services.NewUserWorkoutsCalendarService,
 		repositories.NewWorkoutsStatisticRepository,
+		services.NewUserWorkoutsCalendarGenerator,
 	)
 }
