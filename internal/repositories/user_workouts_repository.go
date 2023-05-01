@@ -61,6 +61,29 @@ func (er *UserWorkoutsRepository) GetActiveUserWorkout(userId string) (*models.U
 	return result, nil
 }
 
+func (er *UserWorkoutsRepository) GetActiveRepeatableUserWorkouts() ([]*models.UserWorkout, error) {
+	query := `SELECT uw.id, uw.created, user_id, workout_plan, schedule, wp.workouts
+				FROM user_workouts as uw
+						 JOIN workout_plans wp on uw.workout_plan = wp.id
+				WHERE active = true
+				  and repeatable = true`
+	rows, err := er.store.Pool.Query(context.Background(), query)
+	if err != nil {
+		er.log.Errorf("Failed to get user workouts due to: %v", err)
+		return nil, err
+	}
+	var result []*models.UserWorkout
+	for rows.Next() {
+		exercise, rowScanErr := activeRepeatableRowToUserWorkout(rows)
+		if rowScanErr != nil {
+			er.log.Errorf("Failed to scan user workout due to: %v", rowScanErr)
+			continue
+		}
+		result = append(result, exercise)
+	}
+	return result, nil
+}
+
 // GetUserWorkoutById Get userWorkout  by id
 func (er *UserWorkoutsRepository) GetUserWorkoutById(id string) (*models.UserWorkout, error) {
 	query := `SELECT id, created, updated, user_id, workout_plan, active, schedule
@@ -74,6 +97,24 @@ func (er *UserWorkoutsRepository) GetUserWorkoutById(id string) (*models.UserWor
 		return nil, err
 	}
 	return result, nil
+}
+
+func activeRepeatableRowToUserWorkout(row pgx.Row) (*models.UserWorkout, error) {
+	userWorkout := &models.UserWorkout{WorkoutPlan: &models.WorkoutPlan{}}
+	var workoutIds []string
+	err := row.Scan(&userWorkout.Id, &userWorkout.Created,
+		&userWorkout.UserId,
+		&userWorkout.WorkoutPlan.Id, &userWorkout.Schedule,
+		&workoutIds)
+	for _, item := range workoutIds {
+		workout := &models.Workout{}
+		workout.Id = item
+		userWorkout.WorkoutPlan.Workouts = append(userWorkout.WorkoutPlan.Workouts, workout)
+	}
+	if err != nil {
+		return nil, err
+	}
+	return userWorkout, nil
 }
 
 func rowToUserWorkout(row pgx.Row) (*models.UserWorkout, error) {

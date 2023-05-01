@@ -11,10 +11,18 @@ import (
 type UserWorkoutsService struct {
 	userWorkoutsRepository *repositories.UserWorkoutsRepository
 	logger                 *zap.SugaredLogger
+	calendarGenerator      *UserWorkoutsCalendarGenerator
+	calendarService        *UserWorkoutsCalendarService
 }
 
-func NewUserWorkoutsService(logger *zap.SugaredLogger, userWorkoutsRepository *repositories.UserWorkoutsRepository) (*UserWorkoutsService, error) {
-	return &UserWorkoutsService{logger: logger, userWorkoutsRepository: userWorkoutsRepository}, nil
+func NewUserWorkoutsService(logger *zap.SugaredLogger,
+	userWorkoutsRepository *repositories.UserWorkoutsRepository,
+	calendarGenerator *UserWorkoutsCalendarGenerator,
+	calendarService *UserWorkoutsCalendarService) (*UserWorkoutsService, error) {
+	return &UserWorkoutsService{logger: logger,
+		userWorkoutsRepository: userWorkoutsRepository,
+		calendarGenerator:      calendarGenerator,
+		calendarService:        calendarService}, nil
 }
 
 func (us *UserWorkoutsService) CreateUserWorkout(userWorkout models.UserWorkout) (*models.UserWorkout, error) {
@@ -30,7 +38,23 @@ func (us *UserWorkoutsService) CreateUserWorkout(userWorkout models.UserWorkout)
 	}
 	us.logger.Infof("New active workout for user %s", userWorkout.UserId)
 	userWorkout.Active = true
-	return us.userWorkoutsRepository.CreateUserWorkout(userWorkout)
+	newItem, err := us.userWorkoutsRepository.CreateUserWorkout(userWorkout)
+	if err != nil {
+		return nil, err
+	}
+	err = us.calendarGenerator.generateWorkoutsOfDay()
+	if err != nil {
+		return nil, err
+	}
+	return newItem, nil
+}
+
+func (us *UserWorkoutsService) GetActiveRepeatableUserWorkouts() ([]*models.UserWorkout, error) {
+	activeWorkouts, err := us.userWorkoutsRepository.GetActiveRepeatableUserWorkouts()
+	if err != nil {
+		return nil, err
+	}
+	return activeWorkouts, err
 }
 
 func (us *UserWorkoutsService) DeactivateWorkoutForUser(userId string) (*models.UserWorkout, error) {
@@ -47,5 +71,13 @@ func (us *UserWorkoutsService) DeactivateWorkoutForUser(userId string) (*models.
 	}
 	us.logger.Infof("Deactive previous workout %s for user %s", activeUserWorkout.Id, userId)
 	activeUserWorkout.Active = false
-	return us.userWorkoutsRepository.UpdateUserWorkout(*activeUserWorkout)
+	updated, err := us.userWorkoutsRepository.UpdateUserWorkout(*activeUserWorkout)
+	if err != nil {
+		return nil, err
+	}
+	err = us.calendarService.DeleteScheduledWorkoutsForUserWorkout(updated.Id)
+	if err != nil {
+		return nil, err
+	}
+	return updated, nil
 }

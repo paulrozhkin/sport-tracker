@@ -6,6 +6,8 @@ import (
 	"github.com/paulrozhkin/sport-tracker/internal/models"
 	"github.com/paulrozhkin/sport-tracker/internal/services"
 	"github.com/paulrozhkin/sport-tracker/internal/utils"
+	"sort"
+	"time"
 )
 
 type ProfileWorkoutsCreateCommand struct {
@@ -56,15 +58,19 @@ func (c *ProfileWorkoutsCreateCommand) Execute() (interface{}, error) {
 	return mapProfileWorkoutModelToDto(createdModel), nil
 }
 
-func mapScheduleDtoToModel(dto []dto.DaysOfWeekDto) []models.DaysOfWeek {
-	var result []models.DaysOfWeek
-	mapUniq := make(map[models.DaysOfWeek]struct{})
+func mapScheduleDtoToModel(dto []dto.DaysOfWeekDto) []time.Weekday {
+	var arrayForSort []int
+	mapUniq := make(map[int]struct{})
 	for _, item := range dto {
-		modelValue := models.DaysOfWeek(item)
-		mapUniq[modelValue] = struct{}{}
+		mapUniq[int(item)] = struct{}{}
 	}
 	for key := range mapUniq {
-		result = append(result, key)
+		arrayForSort = append(arrayForSort, key)
+	}
+	sort.Ints(arrayForSort[:])
+	var result []time.Weekday
+	for _, item := range arrayForSort {
+		result = append(result, time.Weekday(item))
 	}
 	return result
 }

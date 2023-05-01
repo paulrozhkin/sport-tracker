@@ -3,6 +3,7 @@ package dto
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 )
 
 type ProfileWorkoutCreateModel struct {
@@ -14,16 +15,16 @@ type ProfileWorkoutShortModel struct {
 	Id string `json:"id"`
 }
 
-type DaysOfWeekDto int64
+type DaysOfWeekDto int
 
 const (
-	Monday DaysOfWeekDto = iota
+	Sunday DaysOfWeekDto = iota
+	Monday
 	Tuesday
 	Wednesday
 	Thursday
 	Friday
 	Saturday
-	Sunday
 )
 
 func (s DaysOfWeekDto) String() string {
@@ -31,23 +32,23 @@ func (s DaysOfWeekDto) String() string {
 }
 
 var toString = map[DaysOfWeekDto]string{
+	Sunday:    "Sunday",
 	Monday:    "Monday",
 	Tuesday:   "Tuesday",
 	Wednesday: "Wednesday",
 	Thursday:  "Thursday",
 	Friday:    "Friday",
 	Saturday:  "Saturday",
-	Sunday:    "Sunday",
 }
 
 var toID = map[string]DaysOfWeekDto{
+	"Sunday":    Sunday,
 	"Monday":    Monday,
 	"Tuesday":   Tuesday,
 	"Wednesday": Wednesday,
 	"Thursday":  Thursday,
 	"Friday":    Friday,
 	"Saturday":  Saturday,
-	"Sunday":    Sunday,
 }
 
 // MarshalJSON marshals the enum as a quoted json string
@@ -65,7 +66,9 @@ func (s *DaysOfWeekDto) UnmarshalJSON(b []byte) error {
 	if err != nil {
 		return err
 	}
-	// Note that if the string cannot be found then it will be set to the zero value, 'Created' in this case.
-	*s = toID[j]
-	return nil
+	if value, ok := toID[j]; ok {
+		*s = value
+		return nil
+	}
+	return fmt.Errorf("can't convert value %s to valid day of week", j)
 }

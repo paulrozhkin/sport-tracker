@@ -34,6 +34,8 @@ func (us *UserWorkoutsCalendarService) GetCalendarForUser(userId string) (*model
 	us.logger.Infof("Get %d items in statistic", len(statistic))
 
 	calendar := new(models.WorkoutsCalendar)
+	calendar.History = make([]*models.WorkoutStatistic, 0)
+	calendar.Upcoming = make([]*models.WorkoutStatistic, 0)
 	currentDayUnix := utils.GetTodayUtc().Unix()
 	var nextWorkout *models.WorkoutStatistic
 	for _, statisticItem := range statistic {
@@ -86,4 +88,8 @@ func (us *UserWorkoutsCalendarService) ConfirmVisit(confirmModel models.ConfirmV
 		return nil, err
 	}
 	return workout, nil
+}
+
+func (us *UserWorkoutsCalendarService) DeleteScheduledWorkoutsForUserWorkout(userWorkoutId string) error {
+	return us.workoutsStatisticRepository.DeleteScheduledWorkoutsForUserWorkout(userWorkoutId)
 }

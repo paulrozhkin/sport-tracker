@@ -35,6 +35,8 @@ func (c *ProfileWorkoutsCalendarGetCommand) Execute() (interface{}, error) {
 
 func mapWorkoutsCalendarToDto(calendar *models.WorkoutsCalendar) *dto.WorkoutsCalendarModel {
 	result := new(dto.WorkoutsCalendarModel)
+	result.History = make([]*dto.WorkoutStatisticModel, 0)
+	result.Upcoming = make([]*dto.WorkoutStatisticModel, 0)
 	for _, historyItem := range calendar.History {
 		result.History = append(result.History, mapWorkoutStatisticToShortDto(historyItem))
 	}
