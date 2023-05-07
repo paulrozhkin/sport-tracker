@@ -28,6 +28,7 @@ type DatabaseConfigurations struct {
 	DBPassword   string `yaml:"dbpassword"`
 	DBConnection string `yaml:"dbconnection"`
 	DBSslMode    string `yaml:"dbsslmode"`
+	DataSeeding  bool   `yaml:"dbseeding"`
 }
 
 func LoadConfigurations() (*Configuration, error) {
@@ -49,10 +50,15 @@ func LoadConfigurations() (*Configuration, error) {
 	_ = viper.BindEnv("database.dbpassword", "TRACKER_DATABASE_PASSWORD")
 	_ = viper.BindEnv("database.dbconnection", "TRACKER_DATABASE_CONNECTION")
 	_ = viper.BindEnv("database.dbsslmode", "TRACKER_DATABASE_SSL")
+	_ = viper.BindEnv("database.dbseeding", "TRACKER_DATABASE_SEEDING")
 
 	configuration := &Configuration{
 		Server: ServerConfigurations{
 			RequestTimeoutSeconds: DefaultRequestTimeoutSeconds,
+		},
+		Database: DatabaseConfigurations{
+			DataSeeding: false,
+			DBSslMode:   "disable",
 		},
 	}
 

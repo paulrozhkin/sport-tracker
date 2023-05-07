@@ -5,7 +5,6 @@ import (
 	"github.com/paulrozhkin/sport-tracker/internal/commands/dto"
 	"github.com/paulrozhkin/sport-tracker/internal/models"
 	"github.com/paulrozhkin/sport-tracker/internal/services"
-	"github.com/paulrozhkin/sport-tracker/internal/utils"
 )
 
 type RegisterCommand struct {
@@ -41,11 +40,7 @@ func (c *RegisterCommand) Validate() error {
 }
 
 func (c *RegisterCommand) Execute() (interface{}, error) {
-	hashedPassword, err := utils.HashPassword(c.credentials.Password)
-	if err != nil {
-		return nil, err
-	}
-	user := models.User{Username: c.credentials.Username, Password: hashedPassword}
+	user := models.User{Username: c.credentials.Username, Password: c.credentials.Password}
 	newUser, err := c.usersService.CreateUser(user)
 	if err != nil {
 		return nil, err

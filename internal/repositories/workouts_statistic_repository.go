@@ -80,7 +80,10 @@ func (wr *WorkoutsStatisticRepository) GetWorkoutStatisticById(id string) (*mode
 	return result, nil
 }
 
-func (wr *WorkoutsStatisticRepository) UpdateWorkoutsStatistic(workoutsStatistic models.WorkoutStatistic) (*models.WorkoutStatistic, error) {
+func (wr *WorkoutsStatisticRepository) UpdateWorkoutsStatistic(workoutsStatistic models.WorkoutStatistic) (
+	*models.WorkoutStatistic,
+	error,
+) {
 	workoutsStatistic.FillForUpdate()
 	query := `UPDATE workouts_statistic SET updated=$2, workout_date=$3, comment=$4 WHERE id=$1`
 	_, err := wr.store.Pool.Exec(context.Background(), query, workoutsStatistic.Id, workoutsStatistic.Updated,
@@ -92,7 +95,10 @@ func (wr *WorkoutsStatisticRepository) UpdateWorkoutsStatistic(workoutsStatistic
 	return wr.GetWorkoutStatisticById(workoutsStatistic.Id)
 }
 
-func (wr *WorkoutsStatisticRepository) GetLastWorkoutStatisticForUserWorkouts(userWorkoutsIds []string) (map[string]*models.WorkoutStatistic, error) {
+func (wr *WorkoutsStatisticRepository) GetLastWorkoutStatisticForUserWorkouts(userWorkoutsIds []string) (
+	map[string]*models.WorkoutStatistic,
+	error,
+) {
 	query := `SELECT DISTINCT ON (user_workout) user_workout, scheduled_date, workout
 				FROM workouts_statistic as uw
 				WHERE user_workout = ANY ($1)

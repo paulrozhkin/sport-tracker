@@ -37,6 +37,7 @@ func main() {
 			config.LoadConfigurations,
 			http_server.NewHTTPServer,
 			infrastructure.NewPostgresStore,
+			services.NewDataSeedingService,
 			fx.Annotate(
 				http_server.NewServerRoute,
 				fx.ParamTags(`group:"routes"`),
@@ -48,6 +49,7 @@ func main() {
 			return &fxevent.ZapLogger{Logger: log}
 		}),
 		fx.Invoke(func(*infrastructure.Store) {}),
+		fx.Invoke(func(seeding *services.DataSeedingService) {}),
 		fx.Invoke(func(*services.UserWorkoutsCalendarGenerator) {}),
 		fx.Invoke(func(*http.Server) {}),
 	).Run()

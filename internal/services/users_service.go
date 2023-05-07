@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/paulrozhkin/sport-tracker/internal/models"
 	"github.com/paulrozhkin/sport-tracker/internal/repositories"
+	"github.com/paulrozhkin/sport-tracker/internal/utils"
 )
 
 type UsersService struct {
@@ -21,6 +22,11 @@ func (us *UsersService) CreateUser(user models.User) (*models.User, error) {
 	if user.Password == "" {
 		return nil, fmt.Errorf("user password %s in CreateExercise", models.ArgumentNullOrEmptyError)
 	}
+	hashedPassword, err := utils.HashPassword(user.Password)
+	if err != nil {
+		return nil, err
+	}
+	user.Password = hashedPassword
 	return us.userRepository.CreateUser(user)
 }
 

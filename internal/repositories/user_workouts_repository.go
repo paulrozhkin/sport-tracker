@@ -106,14 +106,15 @@ func activeRepeatableRowToUserWorkout(row pgx.Row) (*models.UserWorkout, error) 
 		&userWorkout.UserId,
 		&userWorkout.WorkoutPlan.Id, &userWorkout.Schedule,
 		&workoutIds)
+	if err != nil {
+		return nil, err
+	}
 	for _, item := range workoutIds {
 		workout := &models.Workout{}
 		workout.Id = item
 		userWorkout.WorkoutPlan.Workouts = append(userWorkout.WorkoutPlan.Workouts, workout)
 	}
-	if err != nil {
-		return nil, err
-	}
+	userWorkout.WorkoutPlan.Repeatable = true
 	return userWorkout, nil
 }
 

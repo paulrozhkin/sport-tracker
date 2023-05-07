@@ -49,8 +49,9 @@ func NewPostgresStore(lc fx.Lifecycle,
 		},
 		OnStop: func(ctx context.Context) error {
 			if store.Pool != nil {
-				logger.Info("Database closed")
+				logger.Info("Database closing")
 				store.Pool.Close()
+				logger.Info("Database closed")
 			}
 			return nil
 		},

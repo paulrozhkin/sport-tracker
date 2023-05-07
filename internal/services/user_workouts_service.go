@@ -11,18 +11,18 @@ import (
 type UserWorkoutsService struct {
 	userWorkoutsRepository *repositories.UserWorkoutsRepository
 	logger                 *zap.SugaredLogger
-	calendarGenerator      *UserWorkoutsCalendarGenerator
 	calendarService        *UserWorkoutsCalendarService
+	workoutPlansService    *WorkoutPlansService
 }
 
 func NewUserWorkoutsService(logger *zap.SugaredLogger,
 	userWorkoutsRepository *repositories.UserWorkoutsRepository,
-	calendarGenerator *UserWorkoutsCalendarGenerator,
-	calendarService *UserWorkoutsCalendarService) (*UserWorkoutsService, error) {
+	calendarService *UserWorkoutsCalendarService,
+	workoutPlansService *WorkoutPlansService) (*UserWorkoutsService, error) {
 	return &UserWorkoutsService{logger: logger,
 		userWorkoutsRepository: userWorkoutsRepository,
-		calendarGenerator:      calendarGenerator,
-		calendarService:        calendarService}, nil
+		calendarService:        calendarService,
+		workoutPlansService:    workoutPlansService}, nil
 }
 
 func (us *UserWorkoutsService) CreateUserWorkout(userWorkout models.UserWorkout) (*models.UserWorkout, error) {
@@ -42,19 +42,15 @@ func (us *UserWorkoutsService) CreateUserWorkout(userWorkout models.UserWorkout)
 	if err != nil {
 		return nil, err
 	}
-	err = us.calendarGenerator.generateWorkoutsOfDay()
+	newItem.WorkoutPlan, err = us.workoutPlansService.GetWorkoutPlanById(newItem.WorkoutPlan.Id)
+	if err != nil {
+		return nil, err
+	}
+	err = us.calendarService.CreateCalendarForUserWorkout(newItem)
 	if err != nil {
 		return nil, err
 	}
 	return newItem, nil
-}
-
-func (us *UserWorkoutsService) GetActiveRepeatableUserWorkouts() ([]*models.UserWorkout, error) {
-	activeWorkouts, err := us.userWorkoutsRepository.GetActiveRepeatableUserWorkouts()
-	if err != nil {
-		return nil, err
-	}
-	return activeWorkouts, err
 }
 
 func (us *UserWorkoutsService) DeactivateWorkoutForUser(userId string) (*models.UserWorkout, error) {
