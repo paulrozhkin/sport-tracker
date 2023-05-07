@@ -20,6 +20,7 @@ type ServerConfigurations struct {
 	Host                  string `yaml:"host"`
 	Port                  int    `yaml:"port"`
 	RequestTimeoutSeconds int    `yaml:"requestTimeoutSeconds"`
+	DisableCORS           bool   `yaml:"disableCORS"`
 }
 
 type DatabaseConfigurations struct {
@@ -45,6 +46,7 @@ func LoadConfigurations() (*Configuration, error) {
 	_ = viper.BindEnv("server.port", "TRACKER_SERVER_PORT")
 	_ = viper.BindEnv("server.host", "TRACKER_SERVER_HOST")
 	_ = viper.BindEnv("server.requestTimeoutSeconds", "TRACKER_SERVER_TIMEOUT")
+	_ = viper.BindEnv("server.disableCORS", "TRACKER_DISABLE_CORS")
 	_ = viper.BindEnv("database.dbname", "TRACKER_DATABASE_NAME")
 	_ = viper.BindEnv("database.dbuser", "TRACKER_DATABASE_USER")
 	_ = viper.BindEnv("database.dbpassword", "TRACKER_DATABASE_PASSWORD")

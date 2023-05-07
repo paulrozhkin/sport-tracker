@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
 	"github.com/paulrozhkin/sport-tracker/config"
 	"github.com/paulrozhkin/sport-tracker/internal/http_server/routes"
 	"github.com/paulrozhkin/sport-tracker/internal/services"
@@ -55,6 +56,23 @@ func NewServerRoute(routes []routes.Route,
 	config *config.Configuration,
 	tokenService *services.TokenService) http.Handler {
 	r := chi.NewRouter()
+	if config.Server.DisableCORS {
+		// Basic CORS
+		// for more ideas, see: https://developer.github.com/v3/#cross-origin-resource-sharing
+		corsOptions := cors.Options{
+			// AllowedOrigins:   []string{"https://foo.com"}, // Use this to allow specific origin hosts
+			AllowedOrigins: []string{"https://*", "http://*"},
+			// AllowOriginFunc:  func(r *http.Request, origin string) bool { return true },
+			AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+			AllowedHeaders:   []string{"X-PINGOTHER", "Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+			ExposedHeaders:   []string{"Link"},
+			AllowCredentials: true,
+			MaxAge:           300, // Maximum value not ignored by any of major browsers
+		}
+
+		r.Use(cors.Handler(corsOptions))
+	}
+
 	r.Use(middleware.RequestID)
 	r.Use(middleware.RealIP)
 	r.Use(chizap.New(loggerRaw, &chizap.Opts{

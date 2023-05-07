@@ -2,6 +2,7 @@ server:
   host: localhost
   port: 8080
   requestTimeoutSeconds: 60
+  disableCORS: true
 database:
   dbname: "sport_tracker"
   dbuser: "postgres"
