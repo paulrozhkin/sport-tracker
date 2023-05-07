@@ -57,6 +57,7 @@ func NewServerRoute(routes []routes.Route,
 	tokenService *services.TokenService) http.Handler {
 	r := chi.NewRouter()
 	if config.Server.DisableCORS {
+		logger.Info("CORS disabled")
 		// Basic CORS
 		// for more ideas, see: https://developer.github.com/v3/#cross-origin-resource-sharing
 		corsOptions := cors.Options{
