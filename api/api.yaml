@@ -1276,7 +1276,7 @@ components:
         date:
           type: string
           format: date-time
-          example: '2023-07-21Z'
+          example: '2023-07-21T00:00:00Z'
         weight:
           type: number
           format: float
@@ -1284,6 +1284,10 @@ components:
     createWeightMeasurements:
       type: object
       properties:
+        date:
+          type: string
+          format: date-time
+          example: '2023-07-21T00:00:00Z'
         weight:
           type: integer
           example: 80
@@ -1489,6 +1493,8 @@ components:
           type: string
           format: date-time
           example: '2023-07-21T00:00:00Z'
+        comment:
+          type: string
         workout:
           type: array
           items:

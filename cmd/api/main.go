@@ -83,6 +83,11 @@ func createRoutesRegistration() fx.Option {
 		// Profile workouts calendar
 		routes.AsRoute(routes.NewProfileWorkoutsCalendarGetRoute),
 		routes.AsRoute(routes.NewProfileWorkoutsCalendarVisitRoute),
+		// Statistic
+		routes.AsRoute(routes.NewProfileStatisticGetRoute),
+		routes.AsRoute(routes.NewProfileStatisticWeightCreateRoute),
+		routes.AsRoute(routes.NewProfileStatisticWeightUpdateByIdRoute),
+		routes.AsRoute(routes.NewProfileStatisticWeightDeleteByIdRoute),
 	)
 }
 
@@ -102,5 +107,7 @@ func createServicesRegistration() fx.Option {
 		services.NewUserWorkoutsCalendarService,
 		repositories.NewWorkoutsStatisticRepository,
 		services.NewUserWorkoutsCalendarGenerator,
+		repositories.NewUserWeightMeasurementRepository,
+		services.NewUserStatisticService,
 	)
 }

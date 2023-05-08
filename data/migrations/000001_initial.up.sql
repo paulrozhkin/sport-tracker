@@ -75,6 +75,7 @@ CREATE TABLE IF NOT EXISTS weight_statistic
     id      uuid PRIMARY KEY,
     user_id uuid references users (id) NOT NULL,
     weight  decimal                    NOT NULL,
+    date    timestamp                  NOT NULL,
     created timestamp                  NOT NULL,
     updated timestamp                  NOT NULL
 );
