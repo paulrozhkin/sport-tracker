@@ -83,6 +83,7 @@ func createRoutesRegistration() fx.Option {
 		// Profile workouts calendar
 		routes.AsRoute(routes.NewProfileWorkoutsCalendarGetRoute),
 		routes.AsRoute(routes.NewProfileWorkoutsCalendarVisitRoute),
+		routes.AsRoute(routes.NewProfileWorkoutsCalendarGetByIdRoute),
 		// Statistic
 		routes.AsRoute(routes.NewProfileStatisticGetRoute),
 		routes.AsRoute(routes.NewProfileStatisticWeightCreateRoute),

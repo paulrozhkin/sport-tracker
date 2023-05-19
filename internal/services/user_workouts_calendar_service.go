@@ -26,6 +26,18 @@ func NewUserWorkoutsCalendarService(logger *zap.SugaredLogger,
 		userWorkoutsRepository:      userWorkoutsRepository}, nil
 }
 
+func (us *UserWorkoutsCalendarService) GetWorkoutStatisticById(statisticId string) (*models.WorkoutStatistic, error) {
+	workoutStatisticInfo, err := us.workoutsStatisticRepository.GetWorkoutStatisticById(statisticId)
+	if err != nil {
+		return nil, err
+	}
+	workoutStatisticInfo.Workout, err = us.workoutsService.GetWorkoutById(workoutStatisticInfo.Workout.Id)
+	if err != nil {
+		return nil, err
+	}
+	return workoutStatisticInfo, nil
+}
+
 func (us *UserWorkoutsCalendarService) GetCalendarForUser(userId string) (*models.WorkoutsCalendar, error) {
 	if userId == "" {
 		return nil, fmt.Errorf("userId %s in GetCalendarForUser", models.ArgumentNullOrEmptyError)
