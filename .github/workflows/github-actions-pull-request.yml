@@ -1,8 +1,12 @@
 name: Gym build and test on pull request
 run-name: ${{ github.actor }} build and test on pull request 🚀
 on:
-  pull_request:
-    types: [opened, reopened]
+    push:
+      branches:
+      - main
+    pull_request:
+      branches:
+      - main
 jobs:
   build:
     runs-on: ubuntu-latest
