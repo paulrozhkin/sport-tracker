@@ -26,7 +26,9 @@ func main() {
 		logger, _ = zap.NewDevelopment()
 	}
 
-	defer logger.Sync()
+	defer func(logger *zap.Logger) {
+		_ = logger.Sync()
+	}(logger)
 	undo := zap.ReplaceGlobals(logger)
 	defer undo()
 
