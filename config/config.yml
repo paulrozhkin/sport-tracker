@@ -10,3 +10,4 @@ database:
   dbconnection: "localhost"
   dbsslmode: "disable"
 jwtSigningKey: "<pass jwt signing key>"
+production: false
