@@ -19,6 +19,14 @@ services:
         condition: service_healthy
     ports:
       - "8080:80"
+  
+  web:
+    image: paulrozhkin/sport-tracker-web:latest
+    depends_on:
+      - gateway
+    ports:
+      - "19006:19006"
+      - "19000:19000"
 
   postgres:
     image: postgres
