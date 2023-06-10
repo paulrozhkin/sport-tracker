@@ -14,26 +14,9 @@ import (
 )
 
 func main() {
-	// TODO: refactoring with config from file
-	production := false
-	var logger *zap.Logger
-	if production {
-		loggerCfg := zap.NewProductionConfig()
-		//loggerCfg.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
-		loggerCfg.OutputPaths = append(loggerCfg.OutputPaths, "./logs/sport-tracker.log")
-		logger = zap.Must(loggerCfg.Build())
-	} else {
-		logger, _ = zap.NewDevelopment()
-	}
-
-	defer func(logger *zap.Logger) {
-		_ = logger.Sync()
-	}(logger)
-	undo := zap.ReplaceGlobals(logger)
-	defer undo()
-
 	fx.New(
 		fx.Provide(
+			config.InitLogger,
 			zap.L,
 			zap.S,
 			config.LoadConfigurations,
@@ -50,6 +33,7 @@ func main() {
 		fx.WithLogger(func(log *zap.Logger) fxevent.Logger {
 			return &fxevent.ZapLogger{Logger: log}
 		}),
+		fx.Invoke(func(*config.LoggerConfigurator) {}),
 		fx.Invoke(func(*infrastructure.Store) {}),
 		fx.Invoke(func(seeding *services.DataSeedingService) {}),
 		fx.Invoke(func(*services.UserWorkoutsCalendarGenerator) {}),

@@ -1,11 +1,9 @@
 package config
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/spf13/viper"
-	"go.uber.org/zap"
 )
 
 const DefaultRequestTimeoutSeconds = 60
@@ -14,6 +12,7 @@ type Configuration struct {
 	Server        ServerConfigurations
 	Database      DatabaseConfigurations
 	JwtSigningKey string `yaml:"jwtSigningKey"`
+	Production    bool   `yaml:"production"`
 }
 
 type ServerConfigurations struct {
@@ -43,6 +42,7 @@ func LoadConfigurations() (*Configuration, error) {
 	viper.AutomaticEnv()
 	viper.SetEnvPrefix("TRACKER")
 
+	_ = viper.BindEnv("production", "TRACKER_PRODUCTION")
 	_ = viper.BindEnv("server.port", "TRACKER_SERVER_PORT")
 	_ = viper.BindEnv("server.host", "TRACKER_SERVER_HOST")
 	_ = viper.BindEnv("server.requestTimeoutSeconds", "TRACKER_SERVER_TIMEOUT")
@@ -73,8 +73,6 @@ func LoadConfigurations() (*Configuration, error) {
 	if err != nil {
 		return nil, fmt.Errorf("unable to decode into struct, %v", err)
 	}
-	confString, _ := json.MarshalIndent(configuration, "", " ")
-	zap.S().Info("Configuration:\n", string(confString))
 	validationError := configuration.validate()
 	if validationError != nil {
 		return nil, validationError
