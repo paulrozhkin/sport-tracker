@@ -57,10 +57,6 @@ services:
       - 3000:3000
     volumes:
       - ./deploy/grafana/grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yaml
-    environment:
-      - GF_AUTH_ANONYMOUS_ENABLED=true
-      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
-      - GF_AUTH_DISABLE_LOGIN_FORM=true
 
   loki:
     image: grafana/loki:latest
@@ -78,5 +74,21 @@ services:
     command: -config.file=/etc/promtail/docker-config.yaml
     depends_on:
       - loki
+
+  prometheus:
+    image: prom/prometheus:v2.24.0
+    volumes:
+      - ./deploy/prometheus/:/etc/prometheus/
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    depends_on:
+      - gateway
+    ports:
+      - 9090:9090
+    restart: always
+
 volumes:
   postgres:

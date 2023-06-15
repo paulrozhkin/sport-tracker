@@ -1,6 +1,6 @@
 # sport-tracker
 
-# Dcker push
+# Docker push
 ```
 docker build . -t paulrozhkin/sport-tracker:latest
 docker image push paulrozhkin/sport-tracker:latest
