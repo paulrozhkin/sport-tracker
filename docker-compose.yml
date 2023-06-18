@@ -57,6 +57,7 @@ services:
       - 3000:3000
     volumes:
       - ./deploy/grafana/grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yaml
+      - grafana-storage:/var/lib/grafana
 
   loki:
     image: grafana/loki:latest
@@ -79,6 +80,7 @@ services:
     image: prom/prometheus:v2.24.0
     volumes:
       - ./deploy/prometheus/:/etc/prometheus/
+      - prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
@@ -92,3 +94,5 @@ services:
 
 volumes:
   postgres:
+  prometheus_data:
+  grafana-storage:

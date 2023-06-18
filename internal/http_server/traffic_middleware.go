@@ -24,6 +24,10 @@ func NewTrafficMiddleware(trafficMetrics *metrics.TrafficMetrics) (*TrafficMiddl
 func (tm *TrafficMiddleware) CalculateTraffic(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		uri := tm.regex.ReplaceAllString(r.RequestURI, `{id}`)
+		if uri == "/metrics" {
+			next.ServeHTTP(w, r)
+			return
+		}
 		timer := tm.trafficMetrics.GetTimer(uri)
 		rw := newResponseWriter(w)
 		next.ServeHTTP(rw, r)
