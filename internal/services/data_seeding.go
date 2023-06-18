@@ -350,6 +350,7 @@ func (s *DataSeedingService) seedWorkouts() error {
 
 	// Workout plan
 	plan := &models.WorkoutPlan{Name: "Силовая и кроссфит"}
+	plan.Repeatable = true
 	plan.Workouts = []*models.Workout{workoutDay1, workoutDay2, workoutDay3, workoutDay4, workoutDay5, workoutDay6}
 	_, err = s.workoutPlans.CreateWorkoutPlan(s.modifyP(plan))
 	if err != nil {
