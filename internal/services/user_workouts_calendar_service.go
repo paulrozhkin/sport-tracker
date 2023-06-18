@@ -59,7 +59,7 @@ func (us *UserWorkoutsCalendarService) GetCalendarForUser(userId string) (*model
 		if statisticItem.WorkoutDate != nil {
 			dateToCompare = *statisticItem.WorkoutDate
 		}
-		if currentDayUnix >= dateToCompare.Unix() {
+		if currentDayUnix > dateToCompare.Unix() {
 			calendar.History = append(calendar.History, statisticItem)
 		} else {
 			if nextWorkout == nil {
