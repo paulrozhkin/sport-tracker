@@ -10,6 +10,7 @@ import (
 	"github.com/paulrozhkin/sport-tracker/config"
 	"github.com/paulrozhkin/sport-tracker/internal/http_server/routes"
 	"github.com/paulrozhkin/sport-tracker/internal/services"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 	"moul.io/chizap"
@@ -54,8 +55,10 @@ func NewServerRoute(routes []routes.Route,
 	logger *zap.SugaredLogger,
 	loggerRaw *zap.Logger,
 	config *config.Configuration,
-	tokenService *services.TokenService) http.Handler {
+	tokenService *services.TokenService,
+	tf *TrafficMiddleware) http.Handler {
 	r := chi.NewRouter()
+	r.Use(tf.CalculateTraffic)
 	if config.Server.DisableCORS {
 		logger.Info("CORS disabled")
 		// Basic CORS
@@ -84,9 +87,11 @@ func NewServerRoute(routes []routes.Route,
 
 	timeout := time.Second * time.Duration(config.Server.RequestTimeoutSeconds)
 	r.Use(middleware.Timeout(timeout))
+
 	for _, route := range routes {
 		handler := &HttpHandler{routeHandler: route, logger: logger, tokenService: tokenService}
 		r.Method(route.Method(), route.Pattern(), handler)
 	}
+	r.Handle("/metrics", promhttp.Handler())
 	return r
 }

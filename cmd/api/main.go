@@ -5,6 +5,7 @@ import (
 	"github.com/paulrozhkin/sport-tracker/internal/http_server"
 	"github.com/paulrozhkin/sport-tracker/internal/http_server/routes"
 	"github.com/paulrozhkin/sport-tracker/internal/infrastructure"
+	"github.com/paulrozhkin/sport-tracker/internal/metrics"
 	"github.com/paulrozhkin/sport-tracker/internal/repositories"
 	"github.com/paulrozhkin/sport-tracker/internal/services"
 	"go.uber.org/fx"
@@ -96,5 +97,8 @@ func createServicesRegistration() fx.Option {
 		services.NewUserWorkoutsCalendarGenerator,
 		repositories.NewUserWeightMeasurementRepository,
 		services.NewUserStatisticService,
+		metrics.NewTrafficMetrics,
+		http_server.NewTrafficMiddleware,
+		metrics.NewUsersMetrics,
 	)
 }

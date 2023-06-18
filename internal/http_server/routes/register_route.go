@@ -2,6 +2,7 @@ package routes
 
 import (
 	"github.com/paulrozhkin/sport-tracker/internal/commands"
+	"github.com/paulrozhkin/sport-tracker/internal/metrics"
 	"github.com/paulrozhkin/sport-tracker/internal/services"
 	"net/http"
 )
@@ -9,10 +10,15 @@ import (
 type RegisterRoute struct {
 	userService  *services.UsersService
 	tokenService *services.TokenService
+	usersMetrics *metrics.UsersMetrics
 }
 
-func NewRegisterRoute(userService *services.UsersService, tokenService *services.TokenService) *RegisterRoute {
-	return &RegisterRoute{userService: userService, tokenService: tokenService}
+func NewRegisterRoute(userService *services.UsersService,
+	tokenService *services.TokenService,
+	usersMetrics *metrics.UsersMetrics) *RegisterRoute {
+	return &RegisterRoute{userService: userService,
+		tokenService: tokenService,
+		usersMetrics: usersMetrics}
 }
 
 func (*RegisterRoute) Method() string {
@@ -24,5 +30,5 @@ func (*RegisterRoute) Pattern() string {
 }
 
 func (a *RegisterRoute) NewRouteExecutor() (commands.ICommand, error) {
-	return commands.NewRegisterCommand(a.userService, a.tokenService)
+	return commands.NewRegisterCommand(a.userService, a.tokenService, a.usersMetrics)
 }
