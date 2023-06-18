@@ -3,6 +3,7 @@ package commands
 import (
 	"errors"
 	"github.com/paulrozhkin/sport-tracker/internal/commands/dto"
+	"github.com/paulrozhkin/sport-tracker/internal/metrics"
 	"github.com/paulrozhkin/sport-tracker/internal/models"
 	"github.com/paulrozhkin/sport-tracker/internal/services"
 )
@@ -13,12 +14,18 @@ type RegisterCommand struct {
 	credentials  *dto.Credentials
 	context      *CommandContext
 	tokenService *services.TokenService
+	usersMetrics *metrics.UsersMetrics
 }
 
-func NewRegisterCommand(usersService *services.UsersService, tokenService *services.TokenService) (*RegisterCommand, error) {
+func NewRegisterCommand(usersService *services.UsersService,
+	tokenService *services.TokenService,
+	usersMetrics *metrics.UsersMetrics) (*RegisterCommand, error) {
 	credentials := &dto.Credentials{}
 	context := &CommandContext{CommandContent: credentials}
-	return &RegisterCommand{usersService: usersService, context: context, credentials: credentials, tokenService: tokenService}, nil
+	return &RegisterCommand{usersService: usersService, context: context,
+		credentials: credentials, tokenService: tokenService,
+		usersMetrics: usersMetrics,
+	}, nil
 }
 
 func (c *RegisterCommand) GetCommandContext() *CommandContext {
@@ -45,6 +52,7 @@ func (c *RegisterCommand) Execute() (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
+	c.usersMetrics.UserRegistered()
 	token, err := c.tokenService.CreateToken(newUser)
 	if err != nil {
 		return nil, err

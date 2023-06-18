@@ -99,5 +99,6 @@ func createServicesRegistration() fx.Option {
 		services.NewUserStatisticService,
 		metrics.NewTrafficMetrics,
 		http_server.NewTrafficMiddleware,
+		metrics.NewUsersMetrics,
 	)
 }
