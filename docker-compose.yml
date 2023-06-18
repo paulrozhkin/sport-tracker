@@ -3,6 +3,7 @@ version: '3.4'
 services:
   gateway:
     image: paulrozhkin/sport-tracker:latest
+    restart: always
     environment:
       - "TRACKER_PRODUCTION=true"
       - "TRACKER_SERVER_HOST=0.0.0.0"
@@ -26,6 +27,7 @@ services:
   
   web:
     image: paulrozhkin/sport-tracker-web:latest
+    restart: always
     depends_on:
       - gateway
     ports:
@@ -34,8 +36,8 @@ services:
 
   postgres:
     image: postgres
-    container_name: postgres
     restart: always
+    container_name: postgres
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=sql
@@ -53,6 +55,7 @@ services:
 
   grafana:
     image: grafana/grafana:latest
+    restart: always
     ports:
       - 3000:3000
     volumes:
@@ -61,12 +64,14 @@ services:
 
   loki:
     image: grafana/loki:latest
+    restart: always
     ports:
       - 3100:3100
     command: -config.file=/etc/loki/local-config.yaml
 
   promtail:
     image:  grafana/promtail:latest
+    restart: always
     container_name: promtail
     volumes:
       - ./deploy/loki/promtail.yaml:/etc/promtail/docker-config.yaml
@@ -78,6 +83,7 @@ services:
 
   prometheus:
     image: prom/prometheus:v2.24.0
+    restart: always
     volumes:
       - ./deploy/prometheus/:/etc/prometheus/
       - prometheus_data:/prometheus
@@ -90,7 +96,6 @@ services:
       - gateway
     ports:
       - 9090:9090
-    restart: always
 
 volumes:
   postgres:
