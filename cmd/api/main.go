@@ -44,6 +44,9 @@ func main() {
 
 func createRoutesRegistration() fx.Option {
 	return fx.Provide(
+		// Healthcheck
+		routes.AsRoute(routes.NewHealthcheckRoute),
+		// Auth
 		routes.AsRoute(routes.NewAuthRoute),
 		routes.AsRoute(routes.NewRegisterRoute),
 		// Exercises
