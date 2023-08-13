@@ -58,6 +58,7 @@ func NewServerRoute(routes []routes.Route,
 	tokenService *services.TokenService,
 	tf *TrafficMiddleware) http.Handler {
 	r := chi.NewRouter()
+	r.Use(middleware.Recoverer)
 	r.Use(tf.CalculateTraffic)
 	if config.Server.DisableCORS {
 		logger.Info("CORS disabled")
@@ -83,7 +84,6 @@ func NewServerRoute(routes []routes.Route,
 		WithReferer:   true,
 		WithUserAgent: true,
 	}))
-	r.Use(middleware.Recoverer)
 
 	timeout := time.Second * time.Duration(config.Server.RequestTimeoutSeconds)
 	r.Use(middleware.Timeout(timeout))

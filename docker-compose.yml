@@ -24,7 +24,13 @@ services:
         condition: service_healthy
     ports:
       - "8080:80"
-  
+    healthcheck:
+      test: [ "CMD", "/usr/bin/wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/healthcheck" ]
+      interval: 15s
+      timeout: 3s
+      retries: 5
+      start_period: 30s
+
   web:
     image: paulrozhkin/sport-tracker-web:latest
     restart: always
