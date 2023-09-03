@@ -33,6 +33,7 @@ func (wr *WorkoutsStatisticRepository) CreateWorkoutStatistics(workoutStatistics
 			workoutStatistic.ScheduledDate)
 	}
 	br := wr.store.Pool.SendBatch(context.Background(), batch)
+	defer br.Close()
 	_, err := br.Exec()
 	if err != nil {
 		wr.log.Error("Failed to create workoutsStatistics", err)
